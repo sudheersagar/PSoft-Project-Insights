@@ -24,8 +24,10 @@ The traditional method for reviewing project metadata is broken. Application Des
 No installation required. Simply download the latest `.html` release from this repository and open it in your favorite modern web browser.
 
 ## Demo XML for Testing
-Use the following demo PeopleSoft Project XML file to test **PSoft_Project_Insights.html**:
-👉 [Download Demo PeopleSoft Project XML](https://github.com/sudheersagar/PSoft-Project-Insights/blob/main/Docs/Demo_proj_xml.XML?download=1)
+Use this demo PeopleSoft Project XML file to test **PSoft_Project_Insights.html**:
+👉 [Download Demo Project XML](https://raw.githubusercontent.com/sudheersagar/PSoft-Project-Insights/main/Docs/Demo_proj_xml.XML)
+After downloading, drag and drop the XML file into **PSoft_Project_Insights.html** to visualize and analyze the project.
+
 
 This file contains a large synthetic set of PeopleSoft objects for parser validation.
 
