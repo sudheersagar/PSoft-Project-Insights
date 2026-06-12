@@ -1,7 +1,7 @@
 # PeopleSoft Project Insights 🚀
 A zero-footprint, browser-native utility designed to modernize how developers and architects inspect, review, and document PeopleSoft projects. 
-![Enterprise Project Insights Overview](Docs/Enterprise_Project_Insights_Utility_Overview.png)
 
+![Enterprise Project Insights Overview](Docs/Enterprise_Project_Insights_Utility_Overview.png)
 
 ## 🛑 Bypassing the "PeopleSoft Tax"
 The traditional method for reviewing project metadata is broken. Application Designer XML exports are black boxes of base64-encoded tags. Checking a single audit stamp or line of PeopleCode requires high-latency VPNs, active database connections, and a tedious "12-menu click-loop."
