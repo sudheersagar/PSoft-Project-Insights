@@ -25,7 +25,7 @@ No installation required. Simply download the latest `.html` release from this r
 
 ## Demo XML for Testing
 Use this demo PeopleSoft Project XML file to test **PSoft_Project_Insights.html**:
-👉 [Download Demo Project XML](https://raw.githubusercontent.com/sudheersagar/PSoft-Project-Insights/Docs/Demo_proj_xml.XML)
+👉 [Download Demo Project XML](https://raw.githubusercontent.com/sudheersagar/PSoft-Project-Insights/main/Docs/Demo_proj_xml.XML)
 After downloading, drag and drop the XML file into **PSoft_Project_Insights.html** to visualize and analyze the project.
 This file contains a large synthetic set of PeopleSoft objects for parser validation.
 
