@@ -17,7 +17,7 @@ The traditional method for reviewing project metadata is broken. Application Des
 
 ## 🛠️ How to Use (The 3-Step Flow)
 1. **Export:** In Application Designer, navigate to `Tools -> Copy Project -> To File` to generate your project XML.
-2. **Drag & Drop:** Open the downloaded `Project_Insights.html` file in Chrome, Edge, or Firefox. Drag and drop your XML file into the secure drop zone.
+2. **Drag & Drop:** Open the downloaded `PSoft_Project_Insights.html` file in Chrome, Edge, or Firefox. Drag and drop your XML file into the secure drop zone.
 3. **Inspect:** Instantly browse the interactive grid, filter by status, and click any row to view decoded source code and metadata.
 
 ## 📥 Installation
