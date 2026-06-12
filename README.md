@@ -24,7 +24,8 @@ The traditional method for reviewing project metadata is broken. Application Des
 No installation required. Simply download the latest `.html` release from this repository and open it in your favorite modern web browser.
 
 ## 🤝 Contributing
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/sudheerputti/PSoft-Project-Insights/issues)
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues)
+
 
 
 ## 📄 License
