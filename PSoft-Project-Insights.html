@@ -2006,8 +2006,50 @@
 
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 14px;
+    }
+
+    .dash-wrapper {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .pum-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .pum-checkbox-label:hover {
+      color: var(--text);
+      border-color: var(--cyan);
+      background: var(--surface-3);
+      box-shadow: var(--shadow-md), 0 0 10px rgba(58, 124, 193, 0.1);
+    }
+
+    .pum-checkbox-label input {
+      cursor: pointer;
+      width: 15px;
+      height: 15px;
+      accent-color: var(--cyan);
     }
 
     .metric-card {
@@ -2316,6 +2358,42 @@
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-bright);
       box-shadow: var(--shadow-lg);
+      max-height: 84vh;
+      overflow-y: auto;
+    }
+
+    .help-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .help-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .help-content::-webkit-scrollbar-thumb {
+      background: var(--surface-3);
+      border-radius: 3px;
+    }
+    .help-content::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan);
+    }
+
+    .help-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      margin: 12px 0 20px;
+      border: 1px solid var(--border);
+    }
+
+    .help-table th, .help-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .help-table th {
+      background: var(--surface-3);
+      color: var(--cyan-lt);
+      font-weight: 700;
     }
 
     .help-content h2 {
@@ -3119,8 +3197,8 @@
     <section class="card" id="dashboardSection" style="display:none; animation-delay: 0.1s;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
         <div class="card-title" style="margin-bottom:0;">Analytics Dashboard</div>
-        <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; font-weight:700; color:var(--text-muted); cursor:pointer; background:var(--surface-2); border:1px solid var(--border); padding:6px 12px; border-radius:var(--radius); box-shadow:var(--shadow-sm); transition:all 0.2s ease;">
-          <input type="checkbox" id="pumToolsCheckbox" style="cursor:pointer; width:15px; height:15px; accent-color:var(--cyan);" onchange="togglePumToolsMode()">
+        <label class="pum-checkbox-label">
+          <input type="checkbox" id="pumToolsCheckbox" onchange="togglePumToolsMode()">
           <span>PUM / Tools Upgrade Project</span>
         </label>
       </div>
@@ -3128,22 +3206,24 @@
         <!-- Left column: Category breakdown metrics -->
         <div class="dash-col">
           <div class="dash-subtitle">🗄 Category Breakdown</div>
-          <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-val" id="metricSchema">0</div>
-              <div class="metric-lbl">Schema (Rec/Fld)</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-val" id="metricUI">0</div>
-              <div class="metric-lbl">UI (Page/Comp)</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-val" id="metricLogic">0</div>
-              <div class="metric-lbl">Logic (PC/SQL)</div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-val" id="metricOther">0</div>
-              <div class="metric-lbl">Config/Portal</div>
+          <div class="dash-wrapper">
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-val" id="metricSchema">0</div>
+                <div class="metric-lbl">Schema (Rec/Fld)</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-val" id="metricUI">0</div>
+                <div class="metric-lbl">UI (Page/Comp)</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-val" id="metricLogic">0</div>
+                <div class="metric-lbl">Logic (PC/SQL)</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-val" id="metricOther">0</div>
+                <div class="metric-lbl">Config/Portal</div>
+              </div>
             </div>
           </div>
         </div>
@@ -3151,7 +3231,7 @@
         <!-- Right column: Upgrade actions distribution -->
         <div class="dash-col">
           <div class="dash-subtitle">📊 Upgrade Actions Distribution</div>
-          <div class="action-bars" id="actionBars" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow-sm); flex:1; display:flex; flex-direction:column; justify-content:center;"></div>
+          <div class="action-bars dash-wrapper" id="actionBars"></div>
         </div>
       </div>
     </section>
@@ -3264,18 +3344,81 @@
 
   <div id="helpModal" class="help-modal">
     <div class="help-content">
-      <h2>Quick Help</h2>
-      <ul>
-        <li><b>Upload XML</b> – Load a PeopleSoft App Designer project export file.</li>
-        <li><b>Search</b> – Find objects by name, type, keys, or source code references.</li>
-        <li><b>Object Type Filters</b> – Restrict the grid to selected object categories.</li>
-        <li><b>Type Pills</b> – One-click filtering by object type.</li>
-        <li><b>Export CSV</b> – Download the currently filtered results.</li>
-        <li><b>Print PDF</b> – Generate a printable technical reference view.</li>
-        <li><b>Details Panel</b> – View metadata, properties, SQL, and PeopleCode.</li>
-        <li><b>Theme Toggle</b> – Switch between dark and light themes.</li>
+      <h2>PeopleSoft Project Insights — Developer Guide</h2>
+      
+      <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:18px;">
+        This utility assists PeopleSoft technical developers in reviewing, analyzing, and auditing App Designer projects by parsing the exported XML structure.
+      </p>
+
+      <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">🔑 Core Features</h3>
+      <ul style="margin-bottom:18px;">
+        <li><b>Upload XML</b> – Drag-and-drop or select any App Designer project XML export file (Copy Project &rarr; To File).</li>
+        <li><b>Interactive Search</b> – Filter the object list by object name, type, or keys. Highlights matching terms.</li>
+        <li><b>Side-by-Side Detail Panel</b> – Click a row to inspect full attributes, record field definitions, and source code.</li>
+        <li><b>Source Code Viewer</b> – Formatted and syntax-highlighted SQL, PeopleCode, HTML, and CSS blocks.</li>
+        <li><b>CSV Export & PDF Print</b> – Export currently filtered objects or print a clean technical reference summary sheet.</li>
       </ul>
-      <button class="upload-btn" onclick="document.getElementById('helpModal').style.display='none'">Close</button>
+
+      <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">🔄 PUM & Tools Upgrades</h3>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:8px;">
+        Toggle the <b>PUM / Tools Upgrade Project</b> checkbox at the top-right of the Analytics Dashboard card to enable upgrade tracking:
+      </p>
+      <ul style="margin-bottom:16px;">
+        <li><b>Retrofit?</b> status is tracked for all custom modified objects.</li>
+        <li>Enabling this reveals the **Retrofit?** column, detail flags, filter dropdown, and integrates it into CSV/PDF prints.</li>
+      </ul>
+
+      <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">🔑 Retrofit Logic Matrix</h3>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:8px;">
+        Retrofit tracking is evaluated based on the comparison of the object's status in the source and target databases. An object requires retrofit (<b>Yes</b>) only if it is classified as **Customer Modified**:
+      </p>
+      
+      <table class="help-table">
+        <thead>
+          <tr>
+            <th>Classification</th>
+            <th>Source Status</th>
+            <th>Target Status</th>
+            <th>Retrofit?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Customer Added</b></td>
+            <td>Absent</td>
+            <td>*Changed / *Unchanged</td>
+            <td><span class="status-badge s-no">No</span></td>
+          </tr>
+          <tr style="background:rgba(58, 124, 193, 0.08);">
+            <td><b>Customer Modified</b></td>
+            <td>Changed / Unchanged</td>
+            <td>*Changed / *Unchanged</td>
+            <td><span class="status-badge s-yes" style="box-shadow:none;">Yes</span></td>
+          </tr>
+          <tr>
+            <td><b>Customer Deleted</b></td>
+            <td>Absent</td>
+            <td>Changed / Unchanged</td>
+            <td><span class="status-badge s-no">No</span></td>
+          </tr>
+          <tr>
+            <td><b>PeopleSoft Added</b></td>
+            <td>Any</td>
+            <td>Absent</td>
+            <td><span class="status-badge s-no">No</span></td>
+          </tr>
+          <tr>
+            <td><b>PeopleSoft Modified</b></td>
+            <td>Changed / Unchanged</td>
+            <td>Changed / Unchanged</td>
+            <td><span class="status-badge s-no">No</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="upload-btn" onclick="document.getElementById('helpModal').style.display='none'">Close Guide</button>
+      </div>
     </div>
   </div>
 
@@ -3424,7 +3567,7 @@
     function animateCounter(el, target, duration = 600, total = 0) {
       if (!el) return;
       if (target === 0) {
-        const pctStr = total > 0 ? ` <span style="font-size:1.05rem; font-weight:500; opacity:0.8; margin-left:4px;">(0%)</span>` : '';
+        const pctStr = total > 0 ? `<span style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-muted); margin-top:2px;">(0%)</span>` : '';
         el.innerHTML = '0' + pctStr;
         return;
       }
@@ -3435,7 +3578,7 @@
         const eased = 1 - Math.pow(1 - progress, 3);
         const val = Math.round(eased * target);
         const pct = total > 0 ? Math.round(val / total * 100) : 0;
-        const pctStr = total > 0 ? ` <span style="font-size:1.05rem; font-weight:500; opacity:0.8; margin-left:4px;">(${pct}%)</span>` : '';
+        const pctStr = total > 0 ? `<span style="display:block; font-size:0.78rem; font-weight:600; color:var(--text-muted); margin-top:2px;">(${pct}%)</span>` : '';
         el.innerHTML = String(val) + pctStr;
         if (progress < 1) requestAnimationFrame(step);
       };
@@ -4373,7 +4516,7 @@
 
         html += `
           <!-- Label and value -->
-          <text x="0" y="${y - 4}" fill="var(--text)" font-size="10.5" font-weight="700">${esc(name)}</text>
+          <text x="0" y="${y - 4}" fill="var(--text)" font-family="var(--font-ui)" font-size="10.5" font-weight="700">${esc(name)}</text>
           <text x="${barMaxWidth}" y="${y - 4}" text-anchor="end" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="9.5" font-weight="600">${cnt} (${pct}%)</text>
           
           <!-- Background track -->
