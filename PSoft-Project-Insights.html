@@ -1955,27 +1955,36 @@
        ═══════════════════════════════════════════════════════════════════════ */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 1.1fr 1.15fr 1fr;
+      grid-template-columns: 1.1fr 1fr;
       gap: 28px;
       margin-top: 10px;
-    }
-
-    @media (max-width: 1150px) {
-      .dashboard-grid {
-        grid-template-columns: 1.1fr 1.15fr;
-      }
-      .dashboard-grid .dash-col:last-child {
-        grid-column: span 2;
-      }
     }
 
     @media (max-width: 850px) {
       .dashboard-grid {
         grid-template-columns: 1fr;
       }
-      .dashboard-grid .dash-col:last-child {
-        grid-column: span 1;
-      }
+    }
+
+    /* Hide Retrofit elements by default */
+    .retrofit-only {
+      display: none !important;
+    }
+
+    body.pum-mode select.retrofit-only {
+      display: inline-block !important;
+    }
+
+    body.pum-mode th.retrofit-only {
+      display: table-cell !important;
+    }
+
+    body.pum-mode td.retrofit-only {
+      display: table-cell !important;
+    }
+
+    body.pum-mode .flag-box.retrofit-only {
+      display: block !important;
     }
 
     .dash-col {
@@ -3108,7 +3117,13 @@
 
     <!-- Section 3: Analytics Dashboard (hidden until file loaded) -->
     <section class="card" id="dashboardSection" style="display:none; animation-delay: 0.1s;">
-      <div class="card-title">Analytics Dashboard</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:0;">Analytics Dashboard</div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:0.82rem; font-weight:700; color:var(--text-muted); cursor:pointer; background:var(--surface-2); border:1px solid var(--border); padding:6px 12px; border-radius:var(--radius); box-shadow:var(--shadow-sm); transition:all 0.2s ease;">
+          <input type="checkbox" id="pumToolsCheckbox" style="cursor:pointer; width:15px; height:15px; accent-color:var(--cyan);" onchange="togglePumToolsMode()">
+          <span>PUM / Tools Upgrade Project</span>
+        </label>
+      </div>
       <div class="dashboard-grid">
         <!-- Left column: Category breakdown metrics -->
         <div class="dash-col">
@@ -3132,17 +3147,7 @@
             </div>
           </div>
         </div>
-        <!-- Middle column: Category Distribution Donut Chart -->
-        <div class="dash-col">
-          <div class="dash-subtitle">🍩 Category Distribution</div>
-          <div class="donut-chart-wrap" style="display:flex; align-items:center; justify-content:center; flex:1; min-height:180px; position:relative; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; box-shadow:var(--shadow-sm);">
-             <svg id="donutChartSvg" viewBox="0 0 200 200" style="width:100%; max-width:180px; height:auto; overflow:visible; flex-shrink:0;">
-               <text x="100" y="95" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-weight="700" letter-spacing="0.06em">TOTAL</text>
-               <text x="100" y="120" text-anchor="middle" fill="var(--text)" font-size="20" font-weight="800" id="donutTotalText" style="font-family:var(--font-mono)">0</text>
-             </svg>
-             <div id="donutLegend" style="display:flex; flex-direction:column; gap:6px; margin-left:20px; font-size:0.75rem; justify-content:center;"></div>
-          </div>
-        </div>
+
         <!-- Right column: Upgrade actions distribution -->
         <div class="dash-col">
           <div class="dash-subtitle">📊 Upgrade Actions Distribution</div>
@@ -3184,6 +3189,11 @@
             <option value="Changed">Source: Changed</option>
             <option value="Unchanged">Source: Unchanged</option>
           </select>
+          <select class="filter-select retrofit-only" id="retrofitFilter">
+            <option value="">All retrofit</option>
+            <option value="Yes">Retrofit: Yes</option>
+            <option value="No">Retrofit: No</option>
+          </select>
           <span class="count-badge" id="itemCount"></span>
           <button class="export-btn" id="exportBtn" onclick="exportCSV()">
             ⬇ Export CSV
@@ -3209,11 +3219,12 @@
                 <th>Action</th>
                 <th>Take?</th>
                 <th>Done?</th>
+                <th class="retrofit-only">Retrofit?</th>
               </tr>
             </thead>
             <tbody id="itemsBody">
               <tr class="empty-row">
-                <td colspan="11">No data loaded yet. Please upload a PeopleSoft project XML file.</td>
+                <td id="emptyColspan" colspan="11">No data loaded yet. Please upload a PeopleSoft project XML file.</td>
               </tr>
             </tbody>
           </table>
@@ -3410,14 +3421,22 @@
      * @param {number} target - The final number
      * @param {number} duration - Animation duration in ms
      */
-    function animateCounter(el, target, duration = 600) {
-      if (!el || target === 0) { if (el) el.textContent = String(target); return; }
+    function animateCounter(el, target, duration = 600, total = 0) {
+      if (!el) return;
+      if (target === 0) {
+        const pctStr = total > 0 ? ` <span style="font-size:1.05rem; font-weight:500; opacity:0.8; margin-left:4px;">(0%)</span>` : '';
+        el.innerHTML = '0' + pctStr;
+        return;
+      }
       const start = performance.now();
       const step = (now) => {
         const progress = Math.min((now - start) / duration, 1);
         // Ease out cubic
         const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = String(Math.round(eased * target));
+        const val = Math.round(eased * target);
+        const pct = total > 0 ? Math.round(val / total * 100) : 0;
+        const pctStr = total > 0 ? ` <span style="font-size:1.05rem; font-weight:500; opacity:0.8; margin-left:4px;">(${pct}%)</span>` : '';
+        el.innerHTML = String(val) + pctStr;
         if (progress < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -3628,6 +3647,36 @@
       if (n.includes('service') || n.includes('ib ') || n.includes('message'))
         return { cls: 'type-ib', icon: '\u{1F517}' };
       return { cls: 'type-other', icon: '\u{1F4E6}' };
+    }
+
+    /**
+     * Determines if an item requires retrofit based on specific logic.
+     * Retrofit? should be Yes only if Customer Modified:
+     * - Source: Changed or Unchanged
+     * - Target: *Changed or *Unchanged (Custom Changed or Custom Unchanged)
+     * @param {Object} it - The project item
+     * @returns {boolean} True if retrofit is required
+     */
+    function requiresRetrofit(it) {
+      if (!it) return false;
+      const src = String(it.srcStatus || '').trim().toLowerCase();
+      const tgt = String(it.tgtStatus || '').trim().toLowerCase();
+      const srcOk = (src === 'changed' || src === 'unchanged');
+      const tgtOk = (tgt === 'custom changed' || tgt === 'custom unchanged');
+      return srcOk && tgtOk;
+    }
+
+    /**
+     * Toggles PUM/Tools Upgrade Project mode (hiding/showing Retrofit tracking)
+     */
+    function togglePumToolsMode() {
+      const isChecked = document.getElementById('pumToolsCheckbox').checked;
+      document.body.classList.toggle('pum-mode', isChecked);
+      const emptyCol = document.getElementById('emptyColspan');
+      if (emptyCol) {
+        emptyCol.setAttribute('colspan', isChecked ? '12' : '11');
+      }
+      renderTable();
     }
 
     /**
@@ -4169,15 +4218,13 @@
       const ui = allItems.filter(i => [5, 7].includes(i.typeCode)).length;
       const logic = allItems.filter(i => [8, 9, 30, 39, 40, 42, 43, 44, 45, 46, 47, 48, 58].includes(i.typeCode)).length;
       const other = allItems.length - schema - ui - logic;
+      const total = allItems.length || 1;
 
-      // ENHANCEMENT 2f: Animate metric counters
-      animateCounter(document.getElementById('metricSchema'), schema);
-      animateCounter(document.getElementById('metricUI'), ui);
-      animateCounter(document.getElementById('metricLogic'), logic, 700);
-      animateCounter(document.getElementById('metricOther'), Math.max(0, other), 700);
-
-      // Render Donut Chart
-      renderDonutChart(schema, ui, logic, Math.max(0, other));
+      // ENHANCEMENT 2f: Animate metric counters with percentages
+      animateCounter(document.getElementById('metricSchema'), schema, 600, total);
+      animateCounter(document.getElementById('metricUI'), ui, 600, total);
+      animateCounter(document.getElementById('metricLogic'), logic, 700, total);
+      animateCounter(document.getElementById('metricOther'), Math.max(0, other), 700, total);
 
       // Calculate action distribution
       const actionCounts = {};
@@ -4197,7 +4244,7 @@
       const categories = [
         { name: 'Schema', count: schema, color: '#2E7D4F' },
         { name: 'UI', count: ui, color: '#C8952A' },
-        { name: 'Logic', count: '#3A7CC1' },
+        { name: 'Logic', count: logic, color: '#3A7CC1' },
         { name: 'Other', count: other, color: '#8099bb' }
       ];
 
@@ -4388,6 +4435,11 @@
     });
 
     document.getElementById('statusFilter').addEventListener('change', () => {
+      selectedIdx = -1;
+      renderTable();
+    });
+
+    document.getElementById('retrofitFilter').addEventListener('change', () => {
       selectedIdx = -1;
       renderTable();
     });
@@ -5826,11 +5878,17 @@
       const search = document.getElementById('searchBox').value.trim().toLowerCase();
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
+      const retroFlt = document.getElementById('retrofitFilter') ? document.getElementById('retrofitFilter').value : '';
 
       // Apply filters
       const filtered = allItems.filter(it => {
         if (typeFlt && it.typeName !== typeFlt) return false;
         if (stFlt && !it.srcStatus.includes(stFlt)) return false;
+        if (retroFlt) {
+          const reqRetro = requiresRetrofit(it);
+          if (retroFlt === 'Yes' && !reqRetro) return false;
+          if (retroFlt === 'No' && reqRetro) return false;
+        }
         if (search) {
           const blob = [it.typeName, ...it.vals, it.srcStatus, it.tgtStatus, it.action].join(' ').toLowerCase();
           if (!blob.includes(search)) return false;
@@ -5842,8 +5900,9 @@
       document.getElementById('itemCount').textContent = `${filtered.length} of ${allItems.length}`;
 
       if (!filtered.length) {
+        const hasPum = document.body.classList.contains('pum-mode');
         document.getElementById('itemsBody').innerHTML =
-          `<tr class="empty-row"><td colspan="11">No matching objects.</td></tr>`;
+          `<tr class="empty-row"><td colspan="${hasPum ? 12 : 11}">No matching objects.</td></tr>`;
         return;
       }
 
@@ -5873,6 +5932,7 @@
           <td><span class="status-badge ${statusClass(it.action)}">${esc(it.action)}</span></td>
           <td><span class="status-badge ${statusClass(it.take)}">${esc(it.take)}</span></td>
           <td><span class="status-badge ${statusClass(it.done)}">${esc(it.done)}</span></td>
+          <td class="retrofit-only"><span class="status-badge ${statusClass(requiresRetrofit(it) ? 'yes' : 'no')}">${requiresRetrofit(it) ? 'Yes' : 'No'}</span></td>
         </tr>`;
       }).join('');
 
@@ -6659,6 +6719,10 @@
                   <div class="fb-label">Copy Done?</div>
                   <div class="fb-val"><span class="status-badge ${statusClass(it.done)}">${esc(it.done)}</span></div>
                 </div>
+                <div class="flag-box retrofit-only">
+                  <div class="fb-label">Retrofit?</div>
+                  <div class="fb-val"><span class="status-badge ${statusClass(requiresRetrofit(it) ? 'yes' : 'no')}">${requiresRetrofit(it) ? 'Yes' : 'No'}</span></div>
+                </div>
                 <div class="flag-box">
                   <div class="fb-label">Row #</div>
                   <div class="fb-val" style="font-family:var(--font-mono); color:var(--text-muted)">${it.num}</div>
@@ -6723,9 +6787,11 @@
       const search = document.getElementById('searchBox').value.trim();
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
+      const retroFlt = document.getElementById('retrofitFilter') ? document.getElementById('retrofitFilter').value : '';
       const filterParts = [];
       if (typeFlt) filterParts.push('Type: ' + typeFlt);
       if (stFlt) filterParts.push('Status: ' + stFlt);
+      if (retroFlt) filterParts.push('Retrofit: ' + retroFlt);
       if (search) filterParts.push('Search: "' + search + '"');
       const filterLabel = filterParts.length
         ? ' &nbsp;|&nbsp; Filtered by: ' + filterParts.join(', ')
@@ -6931,7 +6997,7 @@
           const icons = { sql: '\u{1F537}', pc: '\u{1F4DC}', html: '\u{1F310}', css: '\u{1F3A8}' };
           const titles = { sql: 'SQL', pc: 'PeopleCode', html: 'HTML', css: 'CSS' };
 
-          extra = '<tr class="src-row"><td colspan="10">'
+          extra = '<tr class="src-row"><td colspan="' + (hasPum ? '11' : '10') + '">'
             + '<div class="src-header ' + headerClasses[srcInfo.type] + '">'
             + icons[srcInfo.type] + ' ' + titles[srcInfo.type] + ' &mdash; ' + esc(srcInfo.label) + '</div>'
             + '<div class="' + codeClasses[srcInfo.type] + '" data-cb="' + ci + '-code"></div>'
@@ -6947,7 +7013,7 @@
           const di = dlTxt ? codeBlocks.length : -1;
           if (dlTxt) codeBlocks.push({ ci: di, type: 'descr', txt: xmlDec(dlTxt) });
           const badges = stxt.map(t => '<span class="subtype-print-badge">' + esc(t) + '</span>').join('');
-          metaExtra = '<tr class="meta-row"><td colspan="10"><div class="meta-extra-wrap">'
+          metaExtra = '<tr class="meta-row"><td colspan="' + (hasPum ? '11' : '10') + '"><div class="meta-extra-wrap">'
             + badges
             + (dlTxt ? '<div class="descr-print-box" data-cb="' + di + '-descr"></div>' : '')
             + '</div></td></tr>';
@@ -6964,6 +7030,7 @@
           + '<td>' + esc(it.action) + '</td>'
           + '<td>' + esc(it.take) + '</td>'
           + '<td>' + esc(it.done) + '</td>'
+          + (hasPum ? '<td>' + (requiresRetrofit(it) ? 'Yes' : 'No') + '</td>' : '')
           + '</tr>' + metaExtra + extra;
       }).join('');
 
@@ -6995,6 +7062,7 @@
         + '<th>#</th><th>Object Type</th><th>Name / Key 1</th><th>Key 2</th>'
         + '<th>Key 3/4</th><th>Src Status</th><th>Tgt Status</th>'
         + '<th>Action</th><th>Take?</th><th>Done?</th>'
+        + (hasPum ? '<th>Retrofit?</th>' : '')
         + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>'
         + '<div class="print-footer">'
         + '<span>\u00A9 2026 PeopleSoft Project Insights &bull; Generated by PSoft Project Insights</span>'
@@ -7030,16 +7098,24 @@
 
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
+      const retroFlt = document.getElementById('retrofitFilter') ? document.getElementById('retrofitFilter').value : '';
       const search = document.getElementById('searchBox').value.trim();
-      const suffix = [typeFlt, stFlt, search ? 'search' : ''].filter(Boolean).join('_').replace(/\s+/g, '-') || 'all';
+      const hasPum = document.body.classList.contains('pum-mode');
+      const suffix = [typeFlt, stFlt, (hasPum && retroFlt) ? 'retro' : '', search ? 'search' : ''].filter(Boolean).join('_').replace(/\s+/g, '-') || 'all';
 
       const cols = ['#', 'ObjectType', 'TypeCode', 'Key1', 'Key2', 'Key3', 'Key4', 'QueryType', 'SourceStatus', 'TargetStatus', 'UpgradeAction', 'TakeAction', 'CopyDone'];
-      const rows = filteredItems.map(it => [
-        it.num, it.typeName, it.typeCode,
-        it.vals[0] || '', it.vals[1] || '', it.vals[2] || '', it.vals[3] || '',
-        (it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : ''),
-        it.srcStatus, it.tgtStatus, it.action, it.take, it.done
-      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+      if (hasPum) cols.push('Retrofit?');
+
+      const rows = filteredItems.map(it => {
+        const row = [
+          it.num, it.typeName, it.typeCode,
+          it.vals[0] || '', it.vals[1] || '', it.vals[2] || '', it.vals[3] || '',
+          (it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : ''),
+          it.srcStatus, it.tgtStatus, it.action, it.take, it.done
+        ];
+        if (hasPum) row.push(requiresRetrofit(it) ? 'Yes' : 'No');
+        return row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+      });
 
       const csv = [cols.join(','), ...rows].join('\r\n');
       const a = document.createElement('a');
