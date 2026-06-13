@@ -6924,6 +6924,7 @@
       if (!allItems.length) { showToast('No data loaded yet — upload a project XML first', 'warning'); return; }
       if (!filteredItems.length) { showToast('No objects match the current filter — nothing to print', 'warning'); return; }
 
+      const hasPum = document.body.classList.contains('pum-mode');
       const projName = (document.getElementById('projectMeta').querySelector('.accent')?.textContent || 'PeopleSoft Project').trim();
 
       // Collect active filter labels
