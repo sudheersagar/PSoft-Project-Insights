@@ -267,6 +267,21 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
+    .logo-mark svg {
+      animation: logoBreathe 4s infinite ease-in-out;
+    }
+
+    @keyframes logoBreathe {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px rgba(58, 124, 193, 0.4));
+      }
+      50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 10px rgba(58, 124, 193, 0.7));
+      }
+    }
+
     .logo-mark:hover {
       transform: translateY(-2px) scale(1.05);
       box-shadow: 0 6px 24px rgba(12, 35, 64, 0.7), 0 0 12px rgba(58, 124, 193, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -315,6 +330,21 @@
       box-shadow: 0 0 10px rgba(58, 124, 193, 0.2);
     }
 
+    .hbadge.pulse-badge {
+      animation: badgePulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% {
+        box-shadow: 0 0 8px rgba(58, 124, 193, 0.15);
+        border-color: var(--border-glow);
+      }
+      50% {
+        box-shadow: 0 0 18px rgba(58, 124, 193, 0.45);
+        border-color: var(--cyan-lt);
+      }
+    }
+
     /* ═══════════════════════════════════════════════════════════════════════
        SECTION 5: MAIN LAYOUT
        ═══════════════════════════════════════════════════════════════════════ */
@@ -356,9 +386,10 @@
        Glassmorphism card with subtle glow and animations
        ═══════════════════════════════════════════════════════════════════════ */
     .card {
-      background: var(--surface);
-      background: linear-gradient(145deg, var(--surface) 0%, var(--surface-2) 100%);
-      border: 1px solid var(--border);
+      background: var(--surface-glass);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       padding: 24px;
       position: relative;
@@ -1396,9 +1427,10 @@
        Right-side panel showing full object details with tabs
        ═══════════════════════════════════════════════════════════════════════ */
     .details-panel {
-      background: var(--surface);
-      background: linear-gradient(145deg, var(--surface) 0%, var(--surface-2) 100%);
-      border: 1px solid var(--border);
+      background: var(--surface-glass);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       padding: 22px;
       position: sticky;
@@ -1656,28 +1688,54 @@
        SECTION 19: CODE BLOCKS
        Styled code display with syntax highlighting
        ═══════════════════════════════════════════════════════════════════════ */
-    .code-block {
+    .code-block-wrapper {
       background: var(--syn-bg);
       border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 10px;
+      overflow: auto;
+      max-height: 380px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+    }
+
+    .code-block-wrapper .line-numbers {
+      padding: 15px 10px;
+      text-align: right;
+      color: var(--text-dim);
+      border-right: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.65;
+      user-select: none;
+      background: var(--syn-bg);
+      white-space: pre;
+    }
+
+    .code-block-wrapper .code-block {
+      margin: 0;
       padding: 15px;
       font-family: var(--font-mono);
       font-size: 0.79rem;
       line-height: 1.65;
       color: #c9d8f5;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 380px;
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      flex: 1;
+      white-space: pre;
+      overflow-x: visible;
+      overflow-y: visible;
+      word-break: normal;
+      max-height: none;
     }
 
-    .code-block::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
+    .code-block-wrapper::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
 
-    .code-block::-webkit-scrollbar-thumb {
+    .code-block-wrapper::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.15);
       border-radius: 3px;
     }
@@ -1897,15 +1955,26 @@
        ═══════════════════════════════════════════════════════════════════════ */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      grid-template-columns: 1.1fr 1.15fr 1fr;
       gap: 28px;
       margin-top: 10px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1150px) {
+      .dashboard-grid {
+        grid-template-columns: 1.1fr 1.15fr;
+      }
+      .dashboard-grid .dash-col:last-child {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 850px) {
       .dashboard-grid {
         grid-template-columns: 1fr;
-        gap: 22px;
+      }
+      .dashboard-grid .dash-col:last-child {
+        grid-column: span 1;
       }
     }
 
@@ -2924,7 +2993,8 @@
        ENHANCEMENT: SELECTED ROW KEYBOARD HIGHLIGHT
        ═══════════════════════════════════════════════════════════════════════ */
     tbody tr.kb-focus {
-      box-shadow: inset 3px 0 0 var(--cyan);
+      background: rgba(58, 124, 193, 0.1) !important;
+      box-shadow: inset 4px 0 0 var(--cyan);
     }
   </style>
 </head>
@@ -2999,9 +3069,9 @@
         PEOPLESOFT
       </span>
       <!-- Dynamic project name badge -->
-      <span class="hbadge" id="hProj">No project loaded</span>
+      <span class="hbadge pulse-badge" id="hProj">No project loaded</span>
       <!-- Dynamic release version badge -->
-      <span class="hbadge" id="hRelease"></span>
+      <span class="hbadge pulse-badge" id="hRelease"></span>
     </div>
   </header>
 
@@ -3062,10 +3132,21 @@
             </div>
           </div>
         </div>
+        <!-- Middle column: Category Distribution Donut Chart -->
+        <div class="dash-col">
+          <div class="dash-subtitle">🍩 Category Distribution</div>
+          <div class="donut-chart-wrap" style="display:flex; align-items:center; justify-content:center; flex:1; min-height:180px; position:relative; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; box-shadow:var(--shadow-sm);">
+             <svg id="donutChartSvg" viewBox="0 0 200 200" style="width:100%; max-width:180px; height:auto; overflow:visible; flex-shrink:0;">
+               <text x="100" y="95" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-weight="700" letter-spacing="0.06em">TOTAL</text>
+               <text x="100" y="120" text-anchor="middle" fill="var(--text)" font-size="20" font-weight="800" id="donutTotalText" style="font-family:var(--font-mono)">0</text>
+             </svg>
+             <div id="donutLegend" style="display:flex; flex-direction:column; gap:6px; margin-left:20px; font-size:0.75rem; justify-content:center;"></div>
+          </div>
+        </div>
         <!-- Right column: Upgrade actions distribution -->
         <div class="dash-col">
           <div class="dash-subtitle">📊 Upgrade Actions Distribution</div>
-          <div class="action-bars" id="actionBars"></div>
+          <div class="action-bars" id="actionBars" style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow-sm); flex:1; display:flex; flex-direction:column; justify-content:center;"></div>
         </div>
       </div>
     </section>
@@ -4013,7 +4094,8 @@
      * @param {HTMLButtonElement} btn - The copy button element
      */
     function copyCodeText(btn) {
-      const block = btn.nextElementSibling;
+      const wrapper = btn.nextElementSibling;
+      const block = wrapper ? (wrapper.classList.contains('code-block-wrapper') ? wrapper.querySelector('.code-block') : wrapper) : null;
       const text = block ? block.innerText : '';
       navigator.clipboard.writeText(text).then(() => {
         btn.textContent = 'Copied!';
@@ -4077,6 +4159,10 @@
      * Renders the analytics dashboard with category breakdowns
      * and upgrade action distribution bars.
      */
+    /**
+     * Renders the analytics dashboard with category breakdowns,
+     * category distribution SVG donut chart, and upgrade action SVG bar chart.
+     */
     function renderDashboard() {
       // Calculate category counts
       const schema = allItems.filter(i => [0, 2].includes(i.typeCode)).length;
@@ -4090,36 +4176,190 @@
       animateCounter(document.getElementById('metricLogic'), logic, 700);
       animateCounter(document.getElementById('metricOther'), Math.max(0, other), 700);
 
+      // Render Donut Chart
+      renderDonutChart(schema, ui, logic, Math.max(0, other));
+
       // Calculate action distribution
       const actionCounts = {};
       allItems.forEach(it => { actionCounts[it.action] = (actionCounts[it.action] || 0) + 1; });
-      const total = allItems.length || 1;
-      const colors = { Copy: '#3A7CC1', DELETE: '#C0392B', None: '#4a607a', CopyProp: '#5ac5f4' };
-
-      document.getElementById('actionBars').innerHTML = Object.entries(actionCounts)
-        .sort((a, b) => b[1] - a[1])
-        .map(([name, cnt]) => {
-          const pct = Math.round(cnt / total * 100);
-          const color = colors[name] || '#8099bb';
-          return `<div class="action-bar-row">
-            <div class="action-lbl-wrap">
-              <span class="action-lbl">${esc(name)}</span>
-              <span class="action-pct">${cnt} (${pct}%)</span>
-            </div>
-            <div class="action-bar-outer">
-              <div class="action-bar-inner" style="width:${pct}%;background:${color}"></div>
-            </div>
-          </div>`;
-        }).join('');
-
-      // Animate the progress bars after a brief delay
-      setTimeout(() => {
-        document.querySelectorAll('.action-bar-inner').forEach(el => {
-          el.style.width = el.style.width;
-        });
-      }, 50);
+      
+      // Render Upgrade Actions SVG Bar Chart
+      renderActionSvgBarChart(actionCounts);
 
       document.getElementById('dashboardSection').style.display = '';
+    }
+
+    /**
+     * Renders the interactive SVG Donut Chart for category distributions.
+     */
+    function renderDonutChart(schema, ui, logic, other) {
+      const total = schema + ui + logic + other || 1;
+      const categories = [
+        { name: 'Schema', count: schema, color: '#2E7D4F' },
+        { name: 'UI', count: ui, color: '#C8952A' },
+        { name: 'Logic', count: '#3A7CC1' },
+        { name: 'Other', count: other, color: '#8099bb' }
+      ];
+
+      // Use specific theme colors
+      categories[2].color = getComputedStyle(document.documentElement).getPropertyValue('--cyan-lt').trim() || '#3A7CC1';
+      categories[0].color = getComputedStyle(document.documentElement).getPropertyValue('--green-lt').trim() || '#2E7D4F';
+      categories[1].color = getComputedStyle(document.documentElement).getPropertyValue('--amber-lt').trim() || '#C8952A';
+      categories[3].color = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#8099bb';
+
+      const svg = document.getElementById('donutChartSvg');
+      const legend = document.getElementById('donutLegend');
+      const totalEl = document.getElementById('donutTotalText');
+      if (!svg || !legend) return;
+
+      // Clear existing paths (circles)
+      const existingCircles = svg.querySelectorAll('circle');
+      existingCircles.forEach(c => c.remove());
+
+      const r = 70;
+      const circumference = 2 * Math.PI * r;
+      let currentOffset = 0;
+
+      categories.forEach(cat => {
+        if (cat.count === 0) return;
+        const pct = cat.count / total;
+        const strokeLength = pct * circumference;
+        const strokeOffset = circumference - currentOffset;
+        currentOffset += strokeLength;
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', '100');
+        circle.setAttribute('cy', '100');
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', 'transparent');
+        circle.setAttribute('stroke', cat.color);
+        circle.setAttribute('stroke-width', '18');
+        circle.setAttribute('stroke-dasharray', `${strokeLength} ${circumference}`);
+        circle.setAttribute('stroke-dashoffset', strokeOffset);
+        circle.setAttribute('transform', 'rotate(-90 100 100)');
+        circle.style.transition = 'stroke-width 0.25s ease, filter 0.25s ease, stroke 0.3s ease';
+        circle.style.cursor = 'pointer';
+
+        // Hover events
+        circle.addEventListener('mouseenter', () => {
+          circle.setAttribute('stroke-width', '23');
+          circle.setAttribute('filter', `drop-shadow(0 0 4px ${cat.color})`);
+          if (totalEl) {
+            totalEl.textContent = cat.count;
+            const topText = totalEl.previousElementSibling;
+            if (topText) {
+              topText.textContent = cat.name.toUpperCase();
+              topText.setAttribute('fill', cat.color);
+            }
+          }
+        });
+
+        circle.addEventListener('mouseleave', () => {
+          circle.setAttribute('stroke-width', '18');
+          circle.removeAttribute('filter');
+          if (totalEl) {
+            totalEl.textContent = schema + ui + logic + other;
+            const topText = totalEl.previousElementSibling;
+            if (topText) {
+              topText.textContent = 'TOTAL';
+              topText.setAttribute('fill', 'var(--text-muted)');
+            }
+          }
+        });
+
+        svg.appendChild(circle);
+      });
+
+      if (totalEl) {
+        totalEl.textContent = schema + ui + logic + other;
+      }
+
+      // Render legend
+      legend.innerHTML = categories.map(cat => {
+        const pctVal = Math.round(cat.count / total * 100);
+        return `<div style="display:flex; align-items:center; gap:6px; white-space:nowrap;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${cat.color}"></span>
+          <span style="color:var(--text); font-weight:700">${cat.name}:</span>
+          <span style="color:var(--text-muted); font-family:var(--font-mono)">${cat.count} (${pctVal}%)</span>
+        </div>`;
+      }).join('');
+    }
+
+    /**
+     * Renders the SVG horizontal Bar Chart for upgrade actions.
+     */
+    function renderActionSvgBarChart(actionCounts) {
+      const total = allItems.length || 1;
+      const sorted = Object.entries(actionCounts).sort((a, b) => b[1] - a[1]);
+      const container = document.getElementById('actionBars');
+      if (!container) return;
+
+      const svgHeight = sorted.length * 36 + 10;
+      let html = `<svg viewBox="0 0 250 ${svgHeight}" style="width:100%; height:auto; overflow:visible;">
+        <defs>
+          <linearGradient id="barCopyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1A4E8C"/><stop offset="100%" stop-color="#3A7CC1"/>
+          </linearGradient>
+          <linearGradient id="barDeleteGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#C0392B"/><stop offset="100%" stop-color="#E57368"/>
+          </linearGradient>
+          <linearGradient id="barCopyPropGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2E6AAF"/><stop offset="100%" stop-color="#5ac5f4"/>
+          </linearGradient>
+          <linearGradient id="barNoneGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#1a3055"/><stop offset="100%" stop-color="#4a607a"/>
+          </linearGradient>
+        </defs>`;
+
+      sorted.forEach(([name, cnt], idx) => {
+        const pct = Math.round(cnt / total * 100);
+        const y = idx * 36 + 15;
+        let grad = 'url(#barNoneGrad)';
+        let color = '#4a607a';
+        if (name === 'Copy') { grad = 'url(#barCopyGrad)'; color = '#3A7CC1'; }
+        else if (name === 'DELETE') { grad = 'url(#barDeleteGrad)'; color = '#C0392B'; }
+        else if (name === 'CopyProp') { grad = 'url(#barCopyPropGrad)'; color = '#5ac5f4'; }
+
+        // Max bar width: 250px (from x=0 to x=250)
+        const barMaxWidth = 250;
+        const barWidth = Math.max(4, Math.round((pct / 100) * barMaxWidth));
+
+        html += `
+          <!-- Label and value -->
+          <text x="0" y="${y - 4}" fill="var(--text)" font-size="10.5" font-weight="700">${esc(name)}</text>
+          <text x="${barMaxWidth}" y="${y - 4}" text-anchor="end" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="9.5" font-weight="600">${cnt} (${pct}%)</text>
+          
+          <!-- Background track -->
+          <rect x="0" y="${y}" width="${barMaxWidth}" height="8" rx="4" fill="var(--surface-3)" stroke="var(--border)" stroke-width="1" />
+          
+          <!-- Foreground bar -->
+          <rect x="0" y="${y}" width="0" height="8" rx="4" fill="${grad}" style="transition: filter 0.25s ease; cursor: pointer;">
+            <animate attributeName="width" from="0" to="${barWidth}" dur="0.8s" fill="freeze" keyTimes="0;1" keySplines="0.4 0 0.2 1" calcMode="spline" />
+          </rect>
+        `;
+      });
+
+      html += `</svg>`;
+      container.innerHTML = html;
+
+      // Add dynamic hover effects
+      setTimeout(() => {
+        const bars = container.querySelectorAll('rect[fill^="url"]');
+        bars.forEach((bar, idx) => {
+          const [name] = sorted[idx];
+          let color = '#8099bb';
+          if (name === 'Copy') color = '#3A7CC1';
+          else if (name === 'DELETE') color = '#C0392B';
+          else if (name === 'CopyProp') color = '#5ac5f4';
+          
+          bar.addEventListener('mouseenter', () => {
+            bar.setAttribute('filter', `drop-shadow(0 0 3px ${color})`);
+          });
+          bar.addEventListener('mouseleave', () => {
+            bar.removeAttribute('filter');
+          });
+        });
+      }, 50);
     }
 
 
@@ -4282,9 +4522,10 @@
 
       // ─────────────────────────────────────────────────────────────────────
       // Parse PCM (PeopleCode) instances
+      // Supports version-agnostic PCM/PCM844 classes
       // ─────────────────────────────────────────────────────────────────────
       const pcList = [];
-      const pcBlocks = [...clean.matchAll(/<instance class="PCM">[\s\S]*?<\/instance>/gi)];
+      const pcBlocks = [...clean.matchAll(/<instance class="PCM(?:844)?">[\s\S]*?<\/instance>/gi)];
       pcBlocks.forEach(m => {
         const b = m[0];
         const v = [];
@@ -4299,6 +4540,7 @@
 
       // ─────────────────────────────────────────────────────────────────────
       // Parse SRM (SQL) instances
+      // Supports version-agnostic SRM/SRM844 classes
       // ─────────────────────────────────────────────────────────────────────
       const SQL_TYPE_LBL = {
         0: 'Standalone SQL Object',
@@ -4309,7 +4551,7 @@
         5: 'Application Engine SQL'
       };
       const sqlMap = new Map();
-      const srmBlocks = [...clean.matchAll(/<instance class="SRM">[\s\S]*?<\/instance>/gi)];
+      const srmBlocks = [...clean.matchAll(/<instance class="SRM(?:844)?">[\s\S]*?<\/instance>/gi)];
       srmBlocks.forEach(m => {
         const b = m[0];
         const id = getTag(b, 'szSqlId');
@@ -4355,7 +4597,8 @@
       });
 
       // ─────────────────────────────────────────────────────────────────────
-      // Parse HTML / CONT instances
+      // Parse HTML / CONT / CONTDEFN / CRM instances
+      // Supports version-agnostic classes with (?:844)? suffix
       // ─────────────────────────────────────────────────────────────────────
       const htmlMap = new Map();
 
@@ -4372,10 +4615,10 @@
       }
 
       const htmlBlocks = [
-        ...clean.matchAll(/<instance class="HTML">[\s\S]*?<\/instance>/gi),
-        ...clean.matchAll(/<instance class="CONT">[\s\S]*?<\/instance>/gi),
-        ...clean.matchAll(/<instance class="CONTDEFN">[\s\S]*?<\/instance>/gi),
-        ...clean.matchAll(/<instance class="CRM">[\s\S]*?<\/instance>/gi)
+        ...clean.matchAll(/<instance class="HTML(?:844)?">[\s\S]*?<\/instance>/gi),
+        ...clean.matchAll(/<instance class="CONT(?:844)?">[\s\S]*?<\/instance>/gi),
+        ...clean.matchAll(/<instance class="CONTDEFN(?:844)?">[\s\S]*?<\/instance>/gi),
+        ...clean.matchAll(/<instance class="CRM(?:844)?">[\s\S]*?<\/instance>/gi)
       ];
       htmlBlocks.forEach(m => {
         const b = m[0];
@@ -4495,14 +4738,23 @@
 
       // RDM -> Record details
       const rdmMap = new Map();
-      [...clean.matchAll(/<instance class="RDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="RDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szRecName'); if (!name.trim()) return;
         const rftBlock = getOuterTag(b, 'hRft');
         const fieldNames = rftBlock ? getTagAll(rftBlock, 'atmFieldName').filter(Boolean).slice(0, 15) : [];
-        rdmMap.set(name.trim().toUpperCase(), {
+        const keyUpper = name.trim().toUpperCase();
+        const rType = parseInt(getTag(b, 'eRecType') || '-1', 10);
+        
+        // Extract and bind SQL View query if available in SRM blocks
+        let viewSqlText = null;
+        if (rType === 1 || rType === 5 || rType === 6) {
+          viewSqlText = sqlMap.get(norm(keyUpper))?.txt || null;
+        }
+
+        rdmMap.set(keyUpper, {
           descr: getTag(b, 'szRecDescr') || getTag(b, 'szDescr') || '',
-          recType: parseInt(getTag(b, 'eRecType') || '-1', 10),
+          recType: rType,
           fieldCount: getTag(b, 'nFieldCount'),
           sqlTableName: getTag(b, 'szSqlTableName'),
           parentRecName: getTag(b, 'szParentRecName'),
@@ -4515,13 +4767,14 @@
           lastUpdOpr: getTag(b, 'szLastUpdOprId'),
           lastUpdDt: getTag(b, 'szLastUpdDttm'),
           fieldNames,
+          viewSql: viewSqlText,
         });
       });
 
       // FIELD -> Field details
       const FIELD_FORMAT = { 0: 'No Format', 1: 'SS Social Security', 2: 'Phone', 3: 'Zip Code', 4: 'SIN', 5: 'Date', 6: 'Time', 7: 'Date/Time', 8: 'Prefix', 9: 'Custom' };
       const fieldMap = new Map();
-      [...clean.matchAll(/<instance class="FIELD">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="FIELD(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szFieldName'); if (!name.trim()) return;
         const labelBlock = getOuterTag(b, 'hDBFldLabel');
@@ -4544,7 +4797,7 @@
 
       // PDM -> Page details
       const pdmMap = new Map();
-      [...clean.matchAll(/<instance class="PDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="PDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szPnlName'); if (!name.trim()) return;
         const w = parseInt(getTag(b, 'rcRect.right') || '0', 10);
@@ -4576,7 +4829,7 @@
         if (n & 32) a.push('Data Entry');
         return a;
       };
-      [...clean.matchAll(/<instance class="PGM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="PGM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szPnlGrpName'); if (!name.trim()) return;
         const actStr = getTag(b, 'wActions');
@@ -4585,7 +4838,8 @@
           actionsRaw: actStr,
           pnlCount: getTag(b, 'nPnlCount'),
           market: getTag(b, 'szMarket') || 'GBL',
-          srchRec: getTag(b, 'szSrchRecName') || getTag(b, 'szAddSrchRecName'),
+          srchRec: getTag(b, 'szSrchRecName'),
+          addSrchRec: getTag(b, 'szAddSrchRecName'),
           ownerID: getTag(b, 'szObjectOwnerId') || getTag(b, 'szObjectOwnerID'),
           lastUpdOpr: getTag(b, 'szLastUpdOprId'),
         });
@@ -4593,7 +4847,7 @@
 
       // SSM -> StyleSheet details (type 50)
       const ssmMap = new Map();
-      [...clean.matchAll(/<instance class="SSM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="SSM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szStyleSheetName'); if (!name.trim()) return;
         const stType = parseInt(getTag(b, 'eStyleSheetType') || '0', 10);
@@ -4614,7 +4868,7 @@
       // CRM -> Image/Content details (type 49)
       const crmMap = new Map();
       const contTypeLbl = n => (['None', 'Image', 'Java Applet', 'ActiveX', 'HTML Area'][n] || `Type ${n}`);
-      [...clean.matchAll(/<instance class="CRM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="CRM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szContName'); if (!name.trim()) return;
         const ct = parseInt(getTag(b, 'eContType') || '0', 10);
@@ -4655,7 +4909,7 @@
 
       // SRVM -> Service details (type 79)
       const srvmMap = new Map();
-      [...clean.matchAll(/<instance class="SRVM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="SRVM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szIb_servicename'); if (!name.trim()) return;
         srvmMap.set(name.trim().toUpperCase(), {
@@ -4670,7 +4924,7 @@
 
       // OPRM -> Service Operation details (type 80)
       const oprmMap = new Map();
-      [...clean.matchAll(/<instance class="OPRM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="OPRM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szOperationname'); if (!name.trim()) return;
         oprmMap.set(name.trim().toUpperCase(), {
@@ -4685,7 +4939,7 @@
 
       // OPRVM -> Service Operation Version details (type 82)
       const oprvmMap = new Map();
-      [...clean.matchAll(/<instance class="OPRVM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="OPRVM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szOperationname');
         const version = getTag(b, 'szVersionname');
@@ -4715,7 +4969,7 @@
         }
         return '';
       }
-      [...clean.matchAll(/<instance class="RTDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="RTDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szRoutingdefnname');
         const effdt = getTag(b, 'szEffdt');
@@ -4736,7 +4990,7 @@
 
       // MDM -> Menu details (type 6)
       const mdmMap = new Map();
-      [...clean.matchAll(/<instance class="MDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="MDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szMenuName') || getTag(b, 'szObjectValue_0'); if (!name.trim()) return;
         const mitBlock = getOuterTag(b, 'hMit');
@@ -4765,7 +5019,7 @@
       // AEM -> App Engine Program details (type 33)
       const aemMap = new Map();
       const aeProgTypeLbl = t => ({ 0: 'Standard', 1: 'Upgrade Only', 2: 'Import Only', 3: 'Daemon Only' })[t] ?? `Type ${t}`;
-      [...clean.matchAll(/<instance class="AEM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="AEM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szApplId'); if (!name.trim()) return;
         const pt = parseInt(getTag(b, 'eProgType') || getTag(b, 'cProgType') || '0', 10);
@@ -4791,7 +5045,7 @@
       // AES -> App Engine Section details (type 34)
       const aesMap = new Map();
       const aeSectTypeLbl = t => ({ 0: 'Standard', 1: 'Prepare', 2: 'CleanUp' })[t] ?? `Type ${t}`;
-      [...clean.matchAll(/<instance class="AES">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="AES(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const appid = getTag(b, 'szApplId');
         const sect = getTag(b, 'szSection');
@@ -4848,7 +5102,7 @@
 
       // APM -> App Package details (type 57)
       const apmMap = new Map();
-      [...clean.matchAll(/<instance class="APM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="APM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szPackageId'); if (!name.trim()) return;
         const classNames = [];
@@ -4904,7 +5158,7 @@
 
       // URL -> URL Definition details (type 56)
       const urlMap = new Map();
-      [...clean.matchAll(/<instance class="URL">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="URL(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szUrlId'); if (!name.trim()) return;
         urlMap.set(name.trim().toUpperCase(), {
@@ -4917,7 +5171,7 @@
 
       // XTM -> Translate Table details (type 4)
       const xtmMap = new Map();
-      [...clean.matchAll(/<instance class="XTM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="XTM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const fieldName = getTag(b, 'szFieldName'); if (!fieldName.trim()) return;
         const hFvt = getOuterTag(b, 'hFvt');
@@ -4940,7 +5194,7 @@
 
       // CLM -> Permission List details (type 53)
       const clmMap = new Map();
-      [...clean.matchAll(/<instance class="CLM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="CLM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szClassId'); if (!name.trim()) return;
         clmMap.set(name.trim().toUpperCase(), {
@@ -4989,7 +5243,7 @@
       // QDM -> Enhanced Query details (type 10)
       const QRY_TYPE_LBL = { 0: '*', 1: 'User Query', 2: '**', 3: '***', 4: 'Role Query', 5: 'Process Query', 7: 'Archive Query' };
       const qdmMap = new Map();
-      [...clean.matchAll(/<instance class="QDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="QDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szQryName'); if (!name.trim()) return;
         const oprId = (getTag(b, 'szOprId') || '').trim();
@@ -5009,7 +5263,7 @@
 
       // FRM -> File Reference details (type 68)
       const frmMap = new Map();
-      [...clean.matchAll(/<instance class="FRM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="FRM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szFilerefname'); if (!name.trim()) return;
         const dbPlatforms = { 0: 'All Platforms', 2: 'Oracle', 3: 'Microsoft SQL Server', 5: 'DB2 UDB', 7: 'DB2/z OS', 8: 'Informix', 9: 'Sybase' };
@@ -5027,7 +5281,7 @@
 
       // MSDM -> Message Definition details (type 37)
       const msdmMap = new Map();
-      [...clean.matchAll(/<instance class="MSDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="MSDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szMsgName'); if (!name.trim()) return;
         const stCode = parseInt(getTag(b, 'eStatus') || '0', 10);
@@ -5046,7 +5300,7 @@
 
       // SCMA -> IB Message Schema details (type 90)
       const scmaMap = new Map();
-      [...clean.matchAll(/<instance class="SCMA">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="SCMA(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const msgName = getTag(b, 'szMsgname');
         const ver = getTag(b, 'szApmsgver');
@@ -5066,7 +5320,7 @@
 
       // MSG -> Message Catalog Set details (type 25)
       const msgCatMap = new Map();
-      [...clean.matchAll(/<instance class="MSG">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="MSG(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const setNum = getTag(b, 'lMsgSet');
         if (!setNum) return;
@@ -5094,7 +5348,7 @@
 
       // BCM -> Component Interface details (type 32)
       const bcmMap = new Map();
-      [...clean.matchAll(/<instance class="BCM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="BCM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szBcName'); if (!name.trim()) return;
         bcmMap.set(name.trim().toUpperCase(), {
@@ -5113,7 +5367,7 @@
 
       // ROLM -> Role Definition details (type 19)
       const rolmMap = new Map();
-      [...clean.matchAll(/<instance class="ROLM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="ROLM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szRolename'); if (!name.trim()) return;
         const rtCode = getTag(b, 'cRoletype');
@@ -5131,7 +5385,7 @@
 
       // FLM -> File Layout Definition details (type 31)
       const flmMap = new Map();
-      [...clean.matchAll(/<instance class="FLM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="FLM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szDefnName'); if (!name.trim()) return;
         const fmt = parseInt(getTag(b, 'eFormat') || '0', 10);
@@ -5149,7 +5403,7 @@
 
       // QUEM -> IB Queue details (type 84)
       const quemMap = new Map();
-      [...clean.matchAll(/<instance class="QUEM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="QUEM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szQueuename'); if (!name.trim()) return;
         const stCode = parseInt(getTag(b, 'nQueuestatus') || '1', 10);
@@ -5168,7 +5422,7 @@
 
       // CQDM -> Connected Query Definition details (type 91 / 123)
       const cqdmMap = new Map();
-      [...clean.matchAll(/<instance class="CQDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="CQDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szConqrsname'); if (!name.trim()) return;
         cqdmMap.set(name.trim().toUpperCase(), {
@@ -5182,7 +5436,7 @@
 
       // SDEFM -> Search Definition details (type 116)
       const sdefmMap = new Map();
-      [...clean.matchAll(/<instance class="SDEFM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="SDEFM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szSboName'); if (!name.trim()) return;
         const srcCode = getTag(b, 'cSourceType');
@@ -5198,7 +5452,7 @@
 
       // SCATM -> Search Category details (type 117)
       const scatmMap = new Map();
-      [...clean.matchAll(/<instance class="SCATM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="SCATM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szSrccatName'); if (!name.trim()) return;
         scatmMap.set(name.trim().toUpperCase(), {
@@ -5213,7 +5467,7 @@
 
       // SATRM -> Search Attribute details (type 115)
       const satrmMap = new Map();
-      [...clean.matchAll(/<instance class="SATRM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="SATRM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szSrcAttrName'); if (!name.trim()) return;
         const atCode = getTag(b, 'cSrcAttrType');
@@ -5230,7 +5484,7 @@
 
       // TDM -> Tree Definition details (type 12)
       const tdmMap = new Map();
-      [...clean.matchAll(/<instance class="TDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="TDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szTreeName'); if (!name.trim()) return;
         const effDt = getTag(b, 'szEffDt');
@@ -5247,7 +5501,7 @@
 
       // RCSDM -> Related Content Service details (type 112)
       const rcsdmMap = new Map();
-      [...clean.matchAll(/<instance class="RCSDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="RCSDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szServiceId'); if (!name.trim()) return;
         rcsdmMap.set(name.trim().toUpperCase(), {
@@ -5261,7 +5515,7 @@
 
       // OPRHM -> Service Operation Handler details (type 81)
       const oprhmMap = new Map();
-      [...clean.matchAll(/<instance class="OPRHM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="OPRHM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const opName = getTag(b, 'szOperationname');
         const hdlName = getTag(b, 'szHandlername');
@@ -5279,7 +5533,7 @@
 
       // AGM -> Access Group details (type 13)
       const agmMap = new Map();
-      [...clean.matchAll(/<instance class="AGM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="AGM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const name = getTag(b, 'szAccessGroup'); if (!name.trim()) return;
         agmMap.set(name.trim().toUpperCase(), {
@@ -5293,7 +5547,7 @@
       // IDX -> Index field data extracted from RDM's lpIdt/IndexDefn rowset (type 1)
       const INDEX_TYPE_LBL = { 1: 'Unique / Primary Key', 2: 'Unique', 3: 'Non-Unique', 4: 'Clustered', 5: 'Non-Clustered' };
       const indexMap = new Map();
-      [...clean.matchAll(/<instance class="RDM">[\s\S]*?<\/instance>/gi)].forEach(m => {
+      [...clean.matchAll(/<instance class="RDM(?:844)?">[\s\S]*?<\/instance>/gi)].forEach(m => {
         const b = m[0];
         const recName = getTag(b, 'szRecName'); if (!recName.trim()) return;
         const ldtBlock = getOuterTag(b, 'lpIdt');
@@ -5776,6 +6030,7 @@
           ${kv('Page Count', ci?.pnlCount)}
           ${kv('Market', ci?.market)}
           ${kv('Search Record', ci?.srchRec)}
+          ${kv('Add Search Record', ci?.addSrchRec)}
           ${kv('Owner ID', ci?.ownerID)}
           ${kv('Last Updated By', ci?.lastUpdOpr)}
         </div>
@@ -6285,7 +6540,12 @@
       let codeText = '';
       let codeLang = '';
 
-      if (it.pcEntry && it.pcEntry.src) {
+      if (it.typeCode === 0 && it.recInfo && it.recInfo.viewSql) {
+        // Record View SQL query
+        codeText = formatSQL(xmlDecodeStr(it.recInfo.viewSql));
+        codeLang = 'sql';
+        hasCode = true;
+      } else if (it.pcEntry && it.pcEntry.src) {
         // PeopleCode source (may be base64 encoded)
         const isBase64 = /^[A-Za-z0-9+/=\r\n]+$/.test(it.pcEntry.src.trim()) && it.pcEntry.src.length > 100;
         let dispSrc = it.pcEntry.src;
@@ -6335,8 +6595,15 @@
       }
 
       let highlightedCode = '';
+      let lineNumbers = '';
       if (hasCode) {
         highlightedCode = highlightCode(codeText, codeLang);
+        const lineCount = codeText.split('\n').length;
+        const nums = [];
+        for (let i = 1; i <= lineCount; i++) {
+          nums.push(i);
+        }
+        lineNumbers = nums.join('\n');
       }
 
       // ── Build the details panel HTML ──
@@ -6413,7 +6680,10 @@
           <div id="detTabCode" class="det-tab-content" style="display:none">
             <div class="code-block-container">
               <button class="copy-code-btn" onclick="copyCodeText(this)">Copy</button>
-              <div class="code-block">${highlightedCode}</div>
+              <div class="code-block-wrapper">
+                <div class="line-numbers">${lineNumbers}</div>
+                <pre class="code-block">${highlightedCode}</pre>
+              </div>
             </div>
           </div>
           ` : ''}
@@ -6516,6 +6786,8 @@
           if (it.compInfo.actions?.length) parts.push('Actions: ' + it.compInfo.actions.join(', '));
           if (it.compInfo.pnlCount) parts.push('Pages: ' + it.compInfo.pnlCount);
           if (it.compInfo.market) parts.push('Market: ' + it.compInfo.market);
+          if (it.compInfo.srchRec) parts.push('Search Rec: ' + it.compInfo.srchRec);
+          if (it.compInfo.addSrchRec) parts.push('Add Search Rec: ' + it.compInfo.addSrchRec);
         }
         // PeopleCode event name
         if ([8, 43, 44, 45, 46, 47, 48].includes(it.typeCode) && v[2]) {
@@ -6613,6 +6885,10 @@
        * Returns an object with type info or null.
        */
       function getSourceCodeInfo(it) {
+        // Record View SQL query (type 0)
+        if (it.typeCode === 0 && it.recInfo && it.recInfo.viewSql) {
+          return { type: 'sql', label: 'Record View SQL: ' + (it.vals[0] || ''), code: xmlDec(it.recInfo.viewSql.trim()) };
+        }
         // PeopleCode types (8, 42-48, 58, 66)
         if ([8, 42, 43, 44, 45, 46, 47, 48, 58, 66].includes(it.typeCode) && it.pcEntry && it.pcEntry.src) {
           const v = it.vals;
@@ -6770,7 +7046,10 @@
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
       const baseName = loadedXmlFileName ? loadedXmlFileName.replace(/\.[^/.]+$/, "") : "ps_project";
       a.download = `${baseName}_objects_${suffix}.csv`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
     }
 
     // ========================================================================
