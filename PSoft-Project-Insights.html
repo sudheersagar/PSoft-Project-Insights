@@ -3386,47 +3386,47 @@
 
       <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">🔑 Retrofit Logic Matrix</h3>
       <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:8px;">
-        Retrofit tracking is evaluated based on the comparison of the object's status in the source and target databases. An object requires retrofit (<b>Yes</b>) only if it is classified as **Customer Modified**:
+        Retrofit tracking is evaluated directly from the raw XML codes <code>eSourceStatus</code> and <code>eTargetStatus</code>. An object requires retrofit (<b>Yes</b>) only when it is <b>Customer Modified</b> — i.e. a PeopleSoft-delivered object that the customer has also customised:
       </p>
       
       <table class="help-table">
         <thead>
           <tr>
             <th>Classification</th>
-            <th>Source Status</th>
-            <th>Target Status</th>
+            <th>eSourceStatus</th>
+            <th>eTargetStatus</th>
             <th>Retrofit?</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><b>Customer Added</b></td>
-            <td>Absent</td>
-            <td>*Changed / *Unchanged</td>
+            <td>1 — Absent</td>
+            <td>4 — Custom Changed<br>5 — Custom Unchanged</td>
             <td><span class="status-badge s-no">No</span></td>
           </tr>
           <tr style="background:rgba(58, 124, 193, 0.08);">
-            <td><b>Customer Modified</b></td>
-            <td>Changed / Unchanged</td>
-            <td>*Changed / *Unchanged</td>
+            <td><b>Customer Modified</b> ✅</td>
+            <td>2 — Changed<br>3 — Unchanged</td>
+            <td>4 — Custom Changed<br>5 — Custom Unchanged</td>
             <td><span class="status-badge s-yes" style="box-shadow:none;">Yes</span></td>
           </tr>
           <tr>
             <td><b>Customer Deleted</b></td>
-            <td>Absent</td>
-            <td>Changed / Unchanged</td>
+            <td>1 — Absent</td>
+            <td>2 — Changed<br>3 — Unchanged</td>
             <td><span class="status-badge s-no">No</span></td>
           </tr>
           <tr>
             <td><b>PeopleSoft Added</b></td>
             <td>Any</td>
-            <td>Absent</td>
+            <td>1 — Absent</td>
             <td><span class="status-badge s-no">No</span></td>
           </tr>
           <tr>
             <td><b>PeopleSoft Modified</b></td>
-            <td>Changed / Unchanged</td>
-            <td>Changed / Unchanged</td>
+            <td>2 — Changed<br>3 — Unchanged</td>
+            <td>2 — Changed<br>3 — Unchanged</td>
             <td><span class="status-badge s-no">No</span></td>
           </tr>
         </tbody>
@@ -3809,19 +3809,22 @@
     }
 
     /**
-     * Determines if an item requires retrofit based on specific logic.
-     * Retrofit? should be Yes only if Customer Modified:
-     * - Source: Changed or Unchanged
-     * - Target: *Changed or *Unchanged (Custom Changed or Custom Unchanged)
-     * @param {Object} it - The project item
+     * Determines if an item requires retrofit based on PeopleSoft upgrade status codes.
+     *
+     * Rule: Retrofit? = Yes  ONLY when ALL of the following are true:
+     *   eSourceStatus in {2 = Changed, 3 = Unchanged}
+     *   eTargetStatus in {4 = Custom Changed, 5 = Custom Unchanged}
+     *
+     * All other combinations => Retrofit? = No
+     *
+     * @param {Object} it - The project item (carries srcCode / tgtCode from eSourceStatus / eTargetStatus)
      * @returns {boolean} True if retrofit is required
      */
     function requiresRetrofit(it) {
       if (!it) return false;
-      const src = String(it.srcStatus || '').trim().toLowerCase();
-      const tgt = String(it.tgtStatus || '').trim().toLowerCase();
-      const srcOk = (src === 'changed' || src === 'unchanged');
-      const tgtOk = (tgt === 'custom changed' || tgt === 'custom unchanged');
+      // Direct numeric check against raw eSourceStatus / eTargetStatus codes
+      const srcOk = (it.srcCode === 2 || it.srcCode === 3);   // Changed or Unchanged
+      const tgtOk = (it.tgtCode === 4 || it.tgtCode === 5);   // Custom Changed or Custom Unchanged
       return srcOk && tgtOk;
     }
 
@@ -3834,6 +3837,11 @@
       const emptyCol = document.getElementById('emptyColspan');
       if (emptyCol) {
         emptyCol.setAttribute('colspan', isChecked ? '12' : '11');
+      }
+      // When PUM mode is turned off, clear the retrofit filter so it
+      // doesn't silently keep filtering the table while the column is hidden.
+      if (!isChecked) {
+        document.getElementById('retrofitFilter').value = '';
       }
       renderTable();
     }
@@ -4695,6 +4703,16 @@
       renderActionFilter();
       renderDashboard();
       selectedIdx = -1;
+
+      // Reset all filters so a newly loaded file always starts clean.
+      activeType = '';
+      document.getElementById('searchBox').value = '';
+      document.getElementById('typeFilter').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('actionFilter').value = '';
+      document.getElementById('retrofitFilter').value = '';
+      // Clear any active type-pill highlight from the previous file.
+      document.querySelectorAll('.type-pill').forEach(p => p.classList.remove('active'));
 
       // ENHANCEMENT 2a: Reveal sections with staggered animation
       const revealSections = [
@@ -5930,6 +5948,7 @@
 
         return {
           num: i + 1, typeCode, typeName, vals, ids,
+          srcCode: srcSt, tgtCode: tgtSt,   // raw eSourceStatus / eTargetStatus codes
           srcStatus, tgtStatus, action,
           take: take === 1 ? 'Yes' : 'No',
           done: done === 1 ? 'Yes' : 'No',
@@ -6045,11 +6064,16 @@
      */
     // Build the main object table from current search and filter values.
     function renderTable() {
+      const hasPum = document.body.classList.contains('pum-mode');
       const search = document.getElementById('searchBox').value.trim().toLowerCase();
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
       const actionFlt = document.getElementById('actionFilter').value;
-      const retroFlt = document.getElementById('retrofitFilter') ? document.getElementById('retrofitFilter').value : '';
+      // Only honour the retrofit filter when PUM mode is active; if the column
+      // is hidden the filter must be transparent so all objects show through.
+      const retroFlt = (hasPum && document.getElementById('retrofitFilter'))
+        ? document.getElementById('retrofitFilter').value
+        : '';
 
       // Apply filters
       const filtered = allItems.filter(it => {
@@ -6072,7 +6096,6 @@
       document.getElementById('itemCount').textContent = `${filtered.length} of ${allItems.length}`;
 
       if (!filtered.length) {
-        const hasPum = document.body.classList.contains('pum-mode');
         document.getElementById('itemsBody').innerHTML =
           `<tr class="empty-row"><td colspan="${hasPum ? 12 : 11}">No matching objects.</td></tr>`;
         return;
