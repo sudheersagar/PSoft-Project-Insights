@@ -1,0 +1,29 @@
+#,ObjectType,TypeCode,Key1,Key2,Key3,Key4,QueryType,OwnerID,UpdatedBy,UpdatedAt,Visibility,SourceType,SourceStatus,TargetStatus,UpgradeAction,TakeAction,CopyDone
+1,Record,0,XYZ_TRC_UTL_DVW,,,,,,QI8A,2021-01-15-19.29.11.820238,,Record View SQL,Custom Changed,Absent,Copy,Yes,Yes
+2,Record,0,XYZ_TRC_UTL_WRK,,,,,,QI8A,2021-11-03-15.48.06.323894,,,Custom Changed,Absent,Copy,Yes,Yes
+3,Record,0,WEBLIB_TRC_XYZ,,,,,,QI8A,2021-01-15-19.29.12.820491,,,Custom Changed,Absent,Copy,Yes,Yes
+4,Field,2,ENV_NAME_XYZ,,,,,,QI8A,2021-01-15-19.29.13.819977,,,Custom Changed,Absent,Copy,Yes,Yes
+5,Translate,4,ENV_NAME_XYZ,DBG1,10/4/2021,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+6,Translate,4,ENV_NAME_XYZ,DBG2,10/4/2021,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+7,Translate,4,ENV_NAME_XYZ,DBG3,10/4/2021,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+8,Translate,4,ENV_NAME_XYZ,DBH,1/1/2017,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+9,Translate,4,ENV_NAME_XYZ,DBI,8/28/2019,,,,,,,,Absent,Absent,None,No,No
+10,Translate,4,ENV_NAME_XYZ,DBK,1/28/2021,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+11,Translate,4,ENV_NAME_XYZ,DBT,1/1/2017,,,,,,,,Absent,Absent,None,No,No
+12,Translate,4,ENV_NAME_XYZ,DBV,2/22/2021,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+13,Translate,4,ENV_NAME_XYZ,GCC,9/3/2019,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+14,Translate,4,ENV_NAME_XYZ,TLS,4/14/2020,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+15,Page,5,TRC_UTIL_XYZ,,,,,,QI8A,2021-10-04-18.27.15.700352,,,Custom Changed,Absent,Copy,Yes,Yes
+16,Menu,6,MENU_TRC_DEV_XYZ,,,,,,,,,,Custom Changed,Absent,Copy,Yes,Yes
+17,Component,7,TRC_UTIL_XYZ,GBL,,,,,QI8A,,,,Custom Changed,Absent,Copy,Yes,Yes
+18,Record PeopleCode,8,XYZ_TRC_UTL_DVW,DELETE_PB,FieldChange,,,,QI8A,2021-01-15-19.29.15.820482,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+19,Record PeopleCode,8,XYZ_TRC_UTL_DVW,VIEW_PB,FieldChange,,,,QI8A,2021-01-15-19.29.16.819897,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+20,Record PeopleCode,8,XYZ_TRC_UTL_DVW,VIEW_PB,RowInit,,,,QI8A,2021-01-15-19.29.16.820051,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+21,Record PeopleCode,8,XYZ_TRC_UTL_WRK,DELETE_ALL_PB,FieldChange,,,,QI8A,2021-11-03-22.02.11.767553,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+22,Record PeopleCode,8,XYZ_TRC_UTL_WRK,ENV_NAME_XYZ,FieldChange,,,,QI8A,2021-01-15-19.29.16.820077,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+23,Record PeopleCode,8,XYZ_TRC_UTL_WRK,REFRESH_BTN,FieldChange,,,,QI8A,2021-01-15-19.29.16.820116,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+24,SQL Object,30,XYZ_TRC_UTL_DVW,2,,,,,QI8A,2021-01-15-19.29.16.820260,,SQL,Custom Changed,Absent,Copy,Yes,Yes
+25,Page PeopleCode,44,TRC_UTIL_XYZ,Activate,,,,,QI8A,2021-01-15-19.29.16.820482,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
+26,Portal Registry Structure,55,EMPLOYEE,C,TRC_UTIL_XYZ_GBL_1,,,,EC2B,,,,Custom Changed,Absent,Copy,Yes,Yes
+27,Application Package,57,XYZ_DELETE_TRACE,XYZ_DELETE_TRACE,.,,,,QI8A,2021-01-15-19.29.17.820402,,,Custom Changed,Absent,Copy,Yes,Yes
+28,App Package PeopleCode,58,XYZ_DELETE_TRACE,DeleteTraceFile,,,,,Y65S,2021-11-03-15.58.56.997818,,PeopleCode,Custom Changed,Absent,Copy,Yes,Yes
