@@ -28,6 +28,7 @@ Use this demo PeopleSoft Project XML file to test **PSoft_Project_Insights.html*
 👉 [![Download XML](https://img.shields.io/badge/Download-Demo_XML-blue)](https://github.com/sudheersagar/PSoft-Project-Insights/blob/main/Docs/Demo_proj_xml.XML?download=1)
 After downloading, drag and drop the XML file into **PSoft_Project_Insights.html** to visualize and analyze the project.
 This file contains a large synthetic set of PeopleSoft objects for parser validation.
+Included the Project Object CSV file and Project Print PDF file generated from Demo XML project in "Docs" folder for your reference.
 
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues)
