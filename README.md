@@ -21,7 +21,7 @@ The traditional method for reviewing project metadata is broken. Application Des
 3. **Inspect:** Instantly browse the interactive grid, filter by status, and click any row to view decoded source code and metadata.
 
 ## 📥 Installation
-No installation required. Simply download the latest `.html` release from this repository and open it in your favorite modern web browser.
+No installation required. Simply download the latest `PSoft-Project-Insights.html`(https://sudheersagar.github.io/PSoft-Project-Insights/PSoft-Project-Insights.html) release from this repository and open it in your favorite modern web browser.
 
 ## Demo XML for Testing
 Use this demo PeopleSoft Project XML file to test **PSoft_Project_Insights.html**:
