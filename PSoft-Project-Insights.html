@@ -1085,6 +1085,13 @@
         color: #94a3b8;
       }
 
+      #printArea .print-dev-info {
+        color: #ffffff;
+        background: #ffffff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
       @page {
         margin: 15mm 12mm;
         size: auto;
@@ -3269,6 +3276,9 @@
             <option value="Changed">Source: Changed</option>
             <option value="Unchanged">Source: Unchanged</option>
           </select>
+          <select class="filter-select" id="actionFilter">
+            <option value="">All actions</option>
+          </select>
           <select class="filter-select retrofit-only" id="retrofitFilter">
             <option value="">All retrofit</option>
             <option value="Yes">Retrofit: Yes</option>
@@ -3353,10 +3363,16 @@
       <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">🔑 Core Features</h3>
       <ul style="margin-bottom:18px;">
         <li><b>Upload XML</b> – Drag-and-drop or select any App Designer project XML export file (Copy Project &rarr; To File).</li>
-        <li><b>Interactive Search</b> – Filter the object list by object name, type, or keys. Highlights matching terms.</li>
+        <li><b>Search and filters</b> – Use search, Object Type, Source Status, Upgrade Action, and Retrofit filters to narrow objects.</li>
         <li><b>Side-by-Side Detail Panel</b> – Click a row to inspect full attributes, record field definitions, and source code.</li>
         <li><b>Source Code Viewer</b> – Formatted and syntax-highlighted SQL, PeopleCode, HTML, and CSS blocks.</li>
         <li><b>CSV Export & PDF Print</b> – Export currently filtered objects or print a clean technical reference summary sheet.</li>
+      </ul>
+      <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">⚙️ Quick actions</h3>
+      <ul style="margin-bottom:18px;">
+        <li><b>Export CSV</b> – Downloads the active object list with filters applied.</li>
+        <li><b>Print PDF</b> – Prints the current filtered summary with metadata badges and source code blocks.</li>
+        <li><b>PUM / Tools Upgrade checkbox</b> – Toggles retrofit mode and shows the Retrofit column when relevant.</li>
       </ul>
 
       <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">🔄 PUM & Tools Upgrades</h3>
@@ -4582,6 +4598,11 @@
       renderTable();
     });
 
+    document.getElementById('actionFilter').addEventListener('change', () => {
+      selectedIdx = -1;
+      renderTable();
+    });
+
     document.getElementById('retrofitFilter').addEventListener('change', () => {
       selectedIdx = -1;
       renderTable();
@@ -4609,6 +4630,7 @@
       loadFile(file);
     });
 
+    // Main file loader: reads the XML, validates it, and refreshes the UI sections.
     /**
      * Loads and parses a PeopleSoft project XML file.
      * Enhanced with: file size validation, loading spinner, section reveal,
@@ -4652,7 +4674,7 @@
 
       let data;
       try {
-        data = parseXML(text);
+        data = await parseXML(text);
       } catch (e) {
         statusText.className = 'status-bar';
         statusText.textContent = '\u274C Parse error: ' + e.message;
@@ -4670,6 +4692,7 @@
       renderMeta(data.meta);
       renderSummary();
       renderTypeFilter();
+      renderActionFilter();
       renderDashboard();
       selectedIdx = -1;
 
@@ -4703,6 +4726,7 @@
     // Core parsing logic for PeopleSoft project XML files
     // ========================================================================
 
+    // Convert raw XML into the app's object metadata model and lookup maps.
     /**
      * Parses a PeopleSoft project XML file into structured data.
      * Extracts: project metadata, all project items, PeopleCode, SQL,
@@ -5092,12 +5116,7 @@
           refType: rt,
           refTypeLbl: refTypeLbl(rt),
           prntObjName: getTag(b, 'szPrntObjName'),
-          portalPath: (() => {
-            const env = getOuterTag(b, 'pszPath');
-            if (!env || /^\s*POINTER\s*$/i.test(env)) return '';
-            const inner = getTag(env, 'pszPath');
-            return inner || '';
-          })(),
+          portalPath: getDeepTag(b, 'pszPath') || '',
           lastUpdOpr: getTag(b, 'szLastUpdOprId'),
         });
       });
@@ -6001,32 +6020,42 @@
         types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
     }
 
+    // Populate the Upgrade Action dropdown based on parsed object actions.
+    function renderActionFilter() {
+      const actions = [...new Set(allItems.map(x => x.action))].filter(Boolean).sort();
+      document.getElementById('actionFilter').innerHTML =
+        '<option value="">All actions</option>' +
+        actions.map(a => `<option value="${esc(a)}">${esc(a)}</option>`).join('');
+    }
+
     /**
      * Formats portal path for display.
      * @param {string} path - Raw portal path
      * @returns {string} Formatted path
      */
     function formatPortalPath(path) {
-      if (!path) return '';
-      return String(path)
-        .replace(/Root\s*\{/i, 'Root{')
-        .replace(/\./g, ' \u276F ')
-        .trim();
+      const cleaned = String(path || '').trim();
+      return cleaned
+        ? cleaned.replace(/Root\s*\{/i, 'Root{').replace(/\./g, ' \u276F ').trim()
+        : '';
     }
 
     /**
      * Renders the main object listing table with filtering.
      */
+    // Build the main object table from current search and filter values.
     function renderTable() {
       const search = document.getElementById('searchBox').value.trim().toLowerCase();
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
+      const actionFlt = document.getElementById('actionFilter').value;
       const retroFlt = document.getElementById('retrofitFilter') ? document.getElementById('retrofitFilter').value : '';
 
       // Apply filters
       const filtered = allItems.filter(it => {
         if (typeFlt && it.typeName !== typeFlt) return false;
         if (stFlt && !it.srcStatus.includes(stFlt)) return false;
+        if (actionFlt && it.action !== actionFlt) return false;
         if (retroFlt) {
           const reqRetro = requiresRetrofit(it);
           if (retroFlt === 'Yes' && !reqRetro) return false;
@@ -6138,6 +6167,21 @@
               </span>
             </div>`
           : '';
+
+      const ownerId = getObjectOwnerID(it);
+      const lastUpdatedBy = getObjectLastUpdatedBy(it);
+      const lastUpdatedAt = getObjectLastUpdatedAt(it);
+      const sourceCodeType = getObjectSourceType(it);
+      const descriptionFallback = it.descrLong ? '' : getObjectDescriptionFallback(it);
+      const metadataRows = [
+        kv('Owner ID', ownerId),
+        kv('Last Updated By', lastUpdatedBy),
+        kv('Last Updated At', lastUpdatedAt),
+        kv('Query Visibility', it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : ''),
+        kv('Source Code Type', sourceCodeType),
+        kv('Description (Fallback)', descriptionFallback, false, true)
+      ].filter(Boolean).join('');
+      const metadataHtml = metadataRows ? `<div class="det-section"><div class="det-section-title">\u{1F4D1} Object Metadata</div>${metadataRows}</div>` : '';
 
       // ── Type-specific info section ──
       let typeInfoHtml = '';
@@ -6757,12 +6801,12 @@
         codeText = dispSrc;
         codeLang = 'peoplecode';
         hasCode = true;
-      } else if (it.typeCode === 30 || (it.sqlEntry && it.sqlEntry.txt)) {
+      } else if (it.sqlEntry && it.sqlEntry.txt) {
         // SQL source
-        const sqlText = (it.sqlEntry && it.sqlEntry.txt) ? it.sqlEntry.txt : '';
-        codeText = sqlText ? formatSQL(xmlDecodeStr(sqlText)) : `-- Source code not included in this XML file\n-- Object status: ${it.srcStatus || 'Unknown'}\n-- Target status: ${it.tgtStatus || 'Unknown'}`;
+        const sqlText = it.sqlEntry.txt;
+        codeText = sqlText ? formatSQL(xmlDecodeStr(sqlText)) : '';
         codeLang = 'sql';
-        hasCode = true;
+        hasCode = !!sqlText;
       } else if (it.typeCode === 50 && it.styleInfo && it.styleInfo.cssText) {
         // CSS/StyleSheet source
         codeText = xmlDecodeStr(it.styleInfo.cssText);
@@ -6834,6 +6878,7 @@
         
         <div class="det-tab-contents">
           <div id="detTabGeneral" class="det-tab-content">
+            ${metadataHtml}
             ${typeInfoHtml}
             ${keyPairs ? `<div class="det-section">
               <div class="det-section-title">\u{1F511} Additional Keys</div>
@@ -6898,6 +6943,32 @@
       `;
     }
 
+    function getObjectOwnerID(obj) {
+      return obj.qdmEntry?.oprId || obj.recInfo?.ownerID || obj.fieldInfo?.ownerID || obj.pageInfo?.ownerID || obj.compInfo?.ownerID || obj.sqlEntry?.ownerID || obj.htmlEntry?.ownerID || obj.styleInfo?.ownerID || obj.imgInfo?.ownerID || obj.portalInfo?.ownerID || obj.appPkgInfo?.ownerID || obj.serviceInfo?.ownerID || obj.opInfo?.ownerID || obj.opVerInfo?.ownerID || obj.routingInfo?.ownerID || obj.aeProgInfo?.ownerID || obj.aeSectInfo?.ownerID || obj.psdInfo?.ownerID || obj.clmInfo?.ownerID || obj.urlInfo?.ownerID || '';
+    }
+
+    function getObjectLastUpdatedBy(obj) {
+      return obj.pcEntry?.lastUpdOpr || obj.sqlEntry?.lastUpdOpr || obj.htmlEntry?.lastUpdOpr || obj.recInfo?.lastUpdOpr || obj.fieldInfo?.lastUpdOpr || obj.pageInfo?.lastUpdOpr || obj.compInfo?.lastUpdOpr || obj.styleInfo?.lastUpdOpr || obj.imgInfo?.lastUpdOpr || obj.portalInfo?.lastUpdOpr || obj.appPkgInfo?.lastUpdOpr || obj.serviceInfo?.lastUpdOpr || obj.opInfo?.lastUpdOpr || obj.opVerInfo?.lastUpdOpr || obj.routingInfo?.lastUpdOpr || obj.aeProgInfo?.lastUpdOpr || obj.aeSectInfo?.lastUpdOpr || obj.psdInfo?.lastUpdOpr || obj.clmInfo?.lastUpdOpr || obj.urlInfo?.lastUpdOpr || '';
+    }
+
+    function getObjectLastUpdatedAt(obj) {
+      return obj.pcEntry?.lastUpdDt || obj.sqlEntry?.lastUpdDt || obj.htmlEntry?.lastUpdDt || obj.recInfo?.lastUpdDt || obj.fieldInfo?.lastUpdDt || obj.pageInfo?.lastUpdDt || obj.compInfo?.lastUpdDt || obj.styleInfo?.lastUpdDt || obj.imgInfo?.lastUpdDt || obj.portalInfo?.lastUpdDt || obj.appPkgInfo?.lastUpdDt || obj.serviceInfo?.lastUpdDt || obj.opInfo?.lastUpdDt || obj.opVerInfo?.lastUpdDt || obj.routingInfo?.lastUpdDt || obj.aeProgInfo?.lastUpdDt || obj.aeSectInfo?.lastUpdDt || obj.psdInfo?.lastUpdDt || obj.clmInfo?.lastUpdDt || obj.urlInfo?.lastUpdDt || '';
+    }
+
+    function getObjectSourceType(obj) {
+      if (obj.typeCode === 0 && obj.recInfo?.viewSql) return 'Record View SQL';
+      if (obj.pcEntry?.src) return 'PeopleCode';
+      if (obj.sqlEntry?.txt) return 'SQL';
+      if (obj.htmlEntry?.txt) return 'HTML';
+      if (obj.typeCode === 50 && obj.styleInfo?.cssText) return 'CSS';
+      return '';
+    }
+
+    function getObjectDescriptionFallback(obj) {
+      if (obj.descrLong) return '';
+      return obj.recInfo?.descr || obj.fieldInfo?.descr || obj.pageInfo?.descr || obj.compInfo?.descr || obj.styleInfo?.descr || obj.imgInfo?.descr || obj.portalInfo?.descr || obj.appPkgInfo?.descr || obj.serviceInfo?.descr || obj.opInfo?.descr || obj.opVerInfo?.descr || obj.routingInfo?.descr || obj.aeProgInfo?.descr || obj.aeSectInfo?.descr || obj.psdInfo?.descr || obj.clmInfo?.descr || obj.urlInfo?.descr || obj.sqlEntry?.desc || '';
+    }
+
 
     // ========================================================================
     // SECTION L: ENHANCED PRINT TO PDF
@@ -6931,10 +7002,12 @@
       const search = document.getElementById('searchBox').value.trim();
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
+      const actionFlt = document.getElementById('actionFilter').value;
       const retroFlt = document.getElementById('retrofitFilter') ? document.getElementById('retrofitFilter').value : '';
       const filterParts = [];
       if (typeFlt) filterParts.push('Type: ' + typeFlt);
       if (stFlt) filterParts.push('Status: ' + stFlt);
+      if (actionFlt) filterParts.push('Action: ' + actionFlt);
       if (retroFlt) filterParts.push('Retrofit: ' + retroFlt);
       if (search) filterParts.push('Search: "' + search + '"');
       const filterLabel = filterParts.length
@@ -6971,6 +7044,17 @@
         const v = it.vals;
         const parts = [];
 
+        // General metadata badges
+        const ownerId = getObjectOwnerID(it);
+        const updatedBy = getObjectLastUpdatedBy(it);
+        const updatedAt = getObjectLastUpdatedAt(it);
+        const visibility = it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : '';
+        const sourceType = getObjectSourceType(it);
+        if (ownerId) parts.push('Owner: ' + ownerId);
+        if (updatedBy) parts.push('Updated By: ' + updatedBy);
+        if (updatedAt) parts.push('Updated At: ' + updatedAt);
+        if (visibility) parts.push('Visibility: ' + visibility);
+        if (sourceType) parts.push('Source: ' + sourceType);
         // Subtype badge text
         if (it.typeCode === 0 && it.recType >= 0 && recTypeLabel(it.recType)) parts.push('Type: ' + recTypeLabel(it.recType));
         if (it.typeCode === 2 && it.fldType >= 0) parts.push('Type: ' + fldTypeLabel(it.fldType));
@@ -7210,7 +7294,7 @@
         + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>'
         + '<div class="print-footer">'
         + '<span>\u00A9 2026 PeopleSoft Project Insights &bull; Generated by PSoft Project Insights</span>'
-        + '<span>Developer: Sudheer Putti (linkedin.com/in/sudheer-putti)</span>'
+        + '<span class="print-dev-info">Developer: Sudheer Putti (linkedin.com/in/sudheer-putti)</span>'
         + '</div>';
 
       // Populate source code blocks (deferred to avoid HTML escaping issues)
@@ -7247,14 +7331,19 @@
       const hasPum = document.body.classList.contains('pum-mode');
       const suffix = [typeFlt, stFlt, (hasPum && retroFlt) ? 'retro' : '', search ? 'search' : ''].filter(Boolean).join('_').replace(/\s+/g, '-') || 'all';
 
-      const cols = ['#', 'ObjectType', 'TypeCode', 'Key1', 'Key2', 'Key3', 'Key4', 'QueryType', 'SourceStatus', 'TargetStatus', 'UpgradeAction', 'TakeAction', 'CopyDone'];
+      const cols = ['#', 'ObjectType', 'TypeCode', 'Key1', 'Key2', 'Key3', 'Key4', 'QueryType', 'OwnerID', 'UpdatedBy', 'UpdatedAt', 'Visibility', 'SourceType', 'SourceStatus', 'TargetStatus', 'UpgradeAction', 'TakeAction', 'CopyDone'];
       if (hasPum) cols.push('Retrofit?');
 
       const rows = filteredItems.map(it => {
+        const ownerId = getObjectOwnerID(it);
+        const updatedBy = getObjectLastUpdatedBy(it);
+        const updatedAt = getObjectLastUpdatedAt(it);
+        const sourceType = getObjectSourceType(it);
         const row = [
           it.num, it.typeName, it.typeCode,
           it.vals[0] || '', it.vals[1] || '', it.vals[2] || '', it.vals[3] || '',
           (it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : ''),
+          ownerId, updatedBy, updatedAt, (it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : ''), sourceType,
           it.srcStatus, it.tgtStatus, it.action, it.take, it.done
         ];
         if (hasPum) row.push(requiresRetrofit(it) ? 'Yes' : 'No');
