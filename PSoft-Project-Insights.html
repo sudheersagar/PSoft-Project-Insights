@@ -26,6 +26,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PeopleSoft Project Insights — Technical Developer Reference</title>
+  <meta name="author" content="PeopleSoft Project Insights"><meta name="subject" content="PeopleSoft Technical Design Document"><meta name="keywords" content="PeopleSoft, App Engine, PeopleCode, SQL, Technical Design Document">
   <meta name="description"
     content="Single-file HTML utility for parsing and visualizing PeopleSoft App Designer project XML files. Features drag-and-drop upload, analytics dashboard, searchable object table, source code viewer, CSV export, and PDF print.">
 
@@ -776,7 +777,7 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* ── Action Buttons (Export CSV / Print PDF) ── */
+    /* ── Action Buttons (Export CSV / TDD) ── */
     .export-btn,
     .print-btn {
       background: transparent;
@@ -1111,6 +1112,28 @@
         print-color-adjust: exact;
       }
 
+      /* ── TDD Table of Contents styles ── */
+      #printArea .tdd-toc {
+        border: 1px solid #dbe7f7;
+        padding: 8pt;
+        margin-bottom: 12pt;
+        background: #fbfdff !important;
+      }
+      #printArea .tdd-toc-title {
+        font-size: 9pt;
+        font-weight: 800;
+        color: #0c2340;
+        margin-bottom: 6pt;
+      }
+      #printArea .tdd-toc-group-title {
+        font-size: 8pt;
+        font-weight: 700;
+        color: #1a4e8c;
+        margin-top: 6pt;
+      }
+      #printArea .tdd-toc-list { margin: 4pt 0 6pt 14pt; font-size:7.5pt; color:#0c2340 }
+      #printArea .tdd-toc-list a { color: #0c2340; text-decoration: none }
+
       #printArea .print-proj-field {
         display: flex;
         gap: 0;
@@ -1161,6 +1184,135 @@
         line-height: 1.5;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+      }
+
+      #printArea .print-group-section {
+        margin-bottom: 14pt;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      /* Keep the final object type from creating an unnecessary blank page */
+      #printArea .print-group-section:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      #printArea .print-group-title {
+        font-size: 10pt;
+        font-weight: 800;
+        padding: 8pt 10pt;
+        background: #eff6ff !important;
+        border-left: 5px solid #1A4E8C;
+        color: #0c2340 !important;
+        margin-bottom: 8pt;
+      }
+
+      #printArea .print-object-card {
+        page-break-inside: avoid;
+        border: 1px solid #dde7f2;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 10pt;
+        margin-bottom: 12pt;
+      }
+
+      #printArea .print-object-heading {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8pt;
+        align-items: baseline;
+        margin-bottom: 6pt;
+      }
+
+      #printArea .print-object-index {
+        font-size: 7.5pt;
+        color: #64748b;
+      }
+
+      #printArea .print-object-title {
+        font-size: 10pt;
+        font-weight: 700;
+        color: #0c2340;
+        flex: 1 1 auto;
+      }
+
+      #printArea .print-object-action,
+      #printArea .print-object-status {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6pt;
+        align-items: center;
+        margin-top: 4pt;
+      }
+
+      #printArea .print-object-action-label {
+        font-size: 7pt;
+        color: #1A4E8C;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      #printArea .print-object-action-value {
+        font-size: 8pt;
+        color: #1a1a2e;
+      }
+
+      #printArea .print-object-section {
+        margin-top: 10pt;
+      }
+
+      #printArea .print-object-section-title {
+        font-size: 7.5pt;
+        font-weight: 700;
+        color: #1a4e8c;
+        margin-bottom: 4pt;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      #printArea .print-prop-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6pt;
+        margin-bottom: 3pt;
+      }
+
+      #printArea .print-prop-label {
+        min-width: 90pt;
+        font-size: 7pt;
+        font-weight: 700;
+        color: #1a4e8c;
+      }
+
+      #printArea .print-prop-value {
+        font-size: 7pt;
+        color: #1a1a2e;
+        flex: 1 1 60%;
+        word-break: break-word;
+      }
+
+      #printArea .print-object-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6pt;
+        margin-top: 10pt;
+      }
+
+      #printArea .print-object-description {
+        margin-top: 10pt;
+        padding: 8pt 10pt;
+        background: #f4f7fd !important;
+        border-left: 4px solid #1A4E8C;
+        font-size: 7.5pt;
+        color: #283c78 !important;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      #printArea .print-object-source {
+        margin-top: 10pt;
       }
 
       /* ── Object Type Group Headings ── */
@@ -3256,7 +3408,20 @@
       background: rgba(58, 124, 193, 0.1) !important;
       box-shadow: inset 4px 0 0 var(--cyan);
     }
-  </style>
+  
+/* Premium TDD PDF navigation enhancements */
+@media print {
+  #printArea { counter-reset: page; }
+  #printArea .print-group-section { page-break-before: always; break-before: page; }
+  #printArea .print-group-section:first-of-type { page-break-before: auto; break-before: auto; }
+  #printArea .print-object-card { break-inside: avoid; page-break-inside: avoid; }
+  #printArea .code-box, #printArea .pc-code-box, #printArea .sql-header, #printArea .pc-header { break-inside: avoid; }
+  #printArea a { color:#0c2340 !important; text-decoration:none; }
+  #printArea .tdd-toc-list { line-height:1.8; }
+  #printArea .tdd-toc-group-title { page-break-after: avoid; }
+  #printArea .print-footer::after { content: ' | Technical Design Document'; }
+}
+</style>
 </head>
 
 <body>
@@ -3454,8 +3619,8 @@
           <button class="export-btn" id="exportBtn" onclick="exportCSV()">
             ⬇ Export CSV
           </button>
-          <button class="print-btn" id="printBtn" onclick="printPDF()">
-            🖨️ Print PDF
+          <button class="print-btn" id="printBtn" onclick="generateTDD()">
+            📄 TDD
           </button>
         </div>
 
@@ -3537,7 +3702,7 @@
       <h3 style="color:var(--cyan-lt); font-size:0.95rem; font-weight:700; margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;">⚙️ Quick actions</h3>
       <ul style="margin-bottom:18px;">
         <li><b>Export CSV</b> – Downloads the active object list with filters applied.</li>
-        <li><b>Print PDF</b> – Prints the current filtered summary with metadata badges and source code blocks.</li>
+        <li><b>TDD (Technical Design Document)</b> – Generates a formatted Technical Design Document for the current filtered objects, including metadata badges, object properties, long descriptions, and embedded source code suitable for PDF export.</li>
         <li><b>PUM / Tools Upgrade checkbox</b> – Toggles retrofit mode and shows the Retrofit column when relevant.</li>
       </ul>
 
@@ -7201,27 +7366,22 @@
 
 
     // ========================================================================
-    // SECTION L: ENHANCED PRINT TO PDF
-    // Generates a formatted PDF with logo, source code for ALL objects,
-    // and professional formatting
+    // SECTION L: ENHANCED TDD (Technical Design Document)
+    // Generates a formatted TDD with logo, source code for ALL objects,
+    // and professional formatting suitable for PDF export
     // ========================================================================
 
     /**
-     * Generates a print-optimized view of the project data and triggers 
-     * the browser print dialog for PDF export.
-     * 
-     * ENHANCEMENTS:
-     * - Includes a professional header with the logo
-     * - Source code is included for ALL object types with code:
-     *     * PeopleCode (Record, Page, Component, AE, Package, CI, etc.)
-     *     * SQL Objects
-     *     * HTML Objects
-     *     * CSS/StyleSheet objects
-     * - Color-coded headers for each source type
-     * - Subtype badges and description boxes
-     * - Professional footer
+     * Generates a TDD (Technical Design Document) view of the project data
+     * and triggers the browser print dialog for PDF export.
+     *
+     * TDD CONTENT:
+     * - Professional header with project metadata
+     * - Object sections with properties, metadata badges, long descriptions
+     * - Embedded source code blocks (PeopleCode, SQL, HTML, CSS)
+     * - Professional footer for developer reference
      */
-    function printPDF() {
+    function generateTDD() {
       if (!allItems.length) { showToast('No data loaded yet — upload a project XML first', 'warning'); return; }
       if (!filteredItems.length) { showToast('No objects match the current filter — nothing to print', 'warning'); return; }
 
@@ -7338,77 +7498,81 @@
         }
       }
 
-      // ── Group filteredItems by typeName (insertion order = first seen) ──
-      const groups = [];
-      const groupMap = new Map();
+      // ── Group filteredItems by typeCode with preferred ordering for TDD ──
+      // Preferred order follows common PeopleSoft developer priorities
+      const preferredOrder = [0,2,4,5,6,7,8,30,33,34,42,43,44,45,46,47,48,57,58,66];
+      const groupsMap = new Map();
       filteredItems.forEach(it => {
-        if (!groupMap.has(it.typeName)) {
-          const g = { typeName: it.typeName, typeCode: it.typeCode, items: [] };
-          groups.push(g);
-          groupMap.set(it.typeName, g);
-        }
-        groupMap.get(it.typeName).items.push(it);
+        const code = it.typeCode;
+        if (!groupsMap.has(code)) groupsMap.set(code, { typeCode: code, typeName: it.typeName, items: [] });
+        groupsMap.get(code).items.push(it);
       });
+
+      // Build ordered groups array: preferred codes first, then remaining codes sorted by typeName
+      const remaining = Array.from(groupsMap.keys()).filter(c => !preferredOrder.includes(c)).sort((a,b)=>{
+        const an = groupsMap.get(a).typeName || '';
+        const bn = groupsMap.get(b).typeName || '';
+        return an.localeCompare(bn);
+      });
+      const orderedCodes = [...preferredOrder.filter(c=>groupsMap.has(c)), ...remaining];
+      const groups = orderedCodes.map(c => groupsMap.get(c));
 
       // ── Deferred content blocks (source code / long descriptions) ──
       const codeBlocks = [];
+      // ── Table of Contents data will be attached to items as `tddIndex`/`tddTitle`
+      
 
-      // ── Build HTML rows per group ──
-      const COL_SPAN = hasPum ? 7 : 6;
+      // ── Build HTML sections per group ──
       let globalNum = 0;
 
       const groupsHtml = groups.map(g => {
         const { typeName, typeCode, items: gItems } = g;
         const ts = typeStyle(typeName);
 
-        // Dark gradient heading row spanning all columns
-        const groupHdr = '<tr class="print-type-group-row"><td colspan="' + COL_SPAN + '">'
+        const groupHdr = '<div class="print-group-section">'
+          + '<div class="print-group-title" id="tdd-type-' + esc(typeName).replace(/[^a-zA-Z0-9]/g,'-') + '">'
           + ts.icon + ' ' + esc(typeName)
           + '<span class="print-type-count-badge">' + gItems.length + ' object' + (gItems.length !== 1 ? 's' : '') + '</span>'
-          + '</td></tr>';
+          + '</div>';
 
-        // Lightweight column header row for this group
-        const colHdr = '<tr class="print-col-header-row">'
-          + '<td style="width:20pt">#</td>'
-          + '<td>Object Keys</td>'
-          + '<td style="width:52pt">Src Status</td>'
-          + '<td style="width:52pt">Tgt Status</td>'
-          + '<td style="width:40pt">Action</td>'
-          + '<td style="width:30pt">Take?</td>'
-          + '<td style="width:30pt">Done?</td>'
-          + (hasPum ? '<td style="width:36pt">Retrofit?</td>' : '')
-          + '</tr>';
-
-        const objRows = gItems.map(it => {
+        const objCards = gItems.map(it => {
           globalNum++;
           const keyPairs = getKeyPairs(typeCode, it.vals, it.ids);
+          // Level 2 object naming: for PeopleCode/AEM-like types prefer dot-separated name
+          const pcLike = [8,42,43,44,45,46,47,48,58,66,33,34];
+          const objectTitle = (pcLike.includes(typeCode)
+            ? [it.vals[0], it.vals[1], it.vals[2]].filter(Boolean).map(v=>esc(v)).join('.')
+            : keyPairs.filter(([, val]) => val).map(([, val]) => esc(val).replace(/\s+\/\s+/g,' / ')).join(' / ')) || esc(typeName);
+          // store for TOC generation
+          try { it.tddIndex = globalNum; it.tddTitle = objectTitle; } catch (e) {}
 
-          // Key cell: inline labeled blocks, omit empty values (deduplication of null keys)
-          const keyHtml = keyPairs.filter(([, val]) => val)
+          // Level 3 properties: list key pairs
+          let keyHtml = keyPairs.filter(([, val]) => val)
             .map(([lbl, val]) =>
-              '<span class="print-key-cell" style="display:inline-block;margin-right:8pt;vertical-align:top">'
-              + '<span class="print-key-lbl">' + esc(lbl) + '</span>'
-              + '<span class="print-key-val">' + esc(val) + '</span>'
-              + '</span>'
+              '<div class="print-prop-row">'
+              + '<span class="print-prop-label">' + esc(lbl) + '</span>'
+              + '<span class="print-prop-value">' + esc(val) + '</span>'
+              + '</div>'
             ).join('');
 
-          const srcCls = statusCls(it.srcStatus);
-          const tgtCls = statusCls(it.tgtStatus);
-          const rowBg = (globalNum % 2 === 0) ? ' style="background:#f8fafc"' : '';
+          // For Records (type 0) include child field names if available
+          if (typeCode === 0 && it.recInfo && Array.isArray(it.recInfo.fieldNames) && it.recInfo.fieldNames.length) {
+            const fields = it.recInfo.fieldNames.slice(0, 100).map(f => esc(f)).join(', ');
+            keyHtml += '<div class="print-prop-row"><span class="print-prop-label">Fields</span><span class="print-prop-value">' + fields + (it.recInfo.fieldNames.length > 100 ? ' (and more...)' : '') + '</span></div>';
+          }
 
-          const mainRow = '<tr' + rowBg + '>'
-            + '<td style="color:#64748b;font-size:6.5pt">' + globalNum + '</td>'
-            + '<td>' + keyHtml + '</td>'
-            + '<td><span class="print-status-badge ' + srcCls + '">' + esc(it.srcStatus) + '</span></td>'
-            + '<td><span class="print-status-badge ' + tgtCls + '">' + esc(it.tgtStatus) + '</span></td>'
-            + '<td style="font-size:6.5pt">' + esc(it.action) + '</td>'
-            + '<td style="font-size:6.5pt;text-align:center">' + esc(it.take) + '</td>'
-            + '<td style="font-size:6.5pt;text-align:center">' + esc(it.done) + '</td>'
-            + (hasPum ? '<td style="font-size:6.5pt;text-align:center">' + (requiresRetrofit(it) ? 'Yes' : 'No') + '</td>' : '')
-            + '</tr>';
+          const actionHtml = '<div class="print-object-action">'
+            + '<span class="print-object-action-label">Action</span>'
+            + '<span class="print-object-action-value">' + esc(it.action) + '</span>'
+            + '</div>';
 
-          // ── Metadata badges sub-row ──
+          // source/target/take/done will be added to metadata below
+
           const metaParts = [];
+          if (it.srcStatus) metaParts.push('SRC Status: ' + it.srcStatus);
+          if (it.tgtStatus) metaParts.push('TGT Status: ' + it.tgtStatus);
+          if (it.take) metaParts.push('Take: ' + it.take);
+          if (it.done) metaParts.push('Done: ' + it.done);
           const ownerId = getObjectOwnerID(it);
           const updatedBy = getObjectLastUpdatedBy(it);
           const updatedAt = getObjectLastUpdatedAt(it);
@@ -7455,20 +7619,19 @@
             if (it.portalInfo.refTypeLbl) metaParts.push('Ref Type: ' + it.portalInfo.refTypeLbl);
           }
 
+          const metaHtml = metaParts.length
+            ? '<div class="print-object-meta">' + metaParts.map(t => '<span class="subtype-print-badge">' + esc(t) + '</span>').join('') + '</div>'
+            : '';
+
           const dlTxt = (it.descrLong || '').trim();
-          let metaSubRow = '';
-          if (metaParts.length || dlTxt) {
-            const di = dlTxt ? codeBlocks.length : -1;
-            if (dlTxt) codeBlocks.push({ ci: di, type: 'descr', txt: xmlDec(dlTxt) });
-            const badges = metaParts.map(t => '<span class="subtype-print-badge">' + esc(t) + '</span>').join('');
-            metaSubRow = '<tr class="meta-row"><td colspan="' + COL_SPAN + '"><div class="meta-extra-wrap">'
-              + badges
-              + (dlTxt ? '<div class="descr-print-box" data-cb="' + di + '-descr"></div>' : '')
-              + '</div></td></tr>';
+          let descrSection = '';
+          if (dlTxt) {
+            const di = codeBlocks.length;
+            codeBlocks.push({ ci: di, type: 'descr', txt: xmlDec(dlTxt) });
+            descrSection = '<div class="print-object-description" data-cb="' + di + '-descr"></div>';
           }
 
-          // ── Source code sub-row ──
-          let srcSubRow = '';
+          let srcSection = '';
           let srcInfo = null;
           if (typeCode === 0 && it.recInfo && it.recInfo.viewSql) {
             srcInfo = { type: 'sql', label: 'Record View SQL: ' + (it.vals[0] || ''), code: xmlDec(it.recInfo.viewSql.trim()) };
@@ -7491,18 +7654,50 @@
             const codeCls = { sql: 'code-box', pc: 'pc-code-box', html: 'html-code-box', css: 'css-code-box' };
             const icons = { sql: '\u{1F537}', pc: '\u{1F4DC}', html: '\u{1F310}', css: '\u{1F3A8}' };
             const titles = { sql: 'SQL', pc: 'PeopleCode', html: 'HTML', css: 'CSS' };
-            srcSubRow = '<tr class="src-row"><td colspan="' + COL_SPAN + '">'
+            srcSection = '<div class="print-object-source">'
               + '<div class="src-header ' + hdrCls[srcInfo.type] + '">'
               + icons[srcInfo.type] + ' ' + titles[srcInfo.type] + ' &mdash; ' + esc(srcInfo.label) + '</div>'
               + '<div class="' + codeCls[srcInfo.type] + '" data-cb="' + ci + '-code"></div>'
-              + '</td></tr>';
+              + '</div>';
           }
 
-          return mainRow + metaSubRow + srcSubRow;
+          return '<div class="print-object-card" id="tdd-obj-' + globalNum + '">'
+            + '<div class="print-object-heading">'
+            + '<span class="print-object-index">Object ' + globalNum + '</span>'
+            + '<span class="print-object-title">' + objectTitle + '</span>'
+            + '</div>'
+            + '<div class="print-object-summary">' + actionHtml + '</div>'
+            + (keyHtml ? '<div class="print-object-section">'
+              + '<div class="print-object-section-title">Object Properties</div>'
+              + keyHtml
+              + '</div>' : '')
+            + metaHtml
+            + descrSection
+            + srcSection
+            + '</div>';
         }).join('');
 
-        return groupHdr + colHdr + objRows;
+        return groupHdr + objCards + '</div>';
       }).join('');
+
+      // ── Build Table of Contents (TDD index)
+      let tocHtml = '';
+      if (groups && groups.length) {
+        tocHtml = '<div class="tdd-toc">'
+          + '<div class="tdd-toc-title">Table of Contents</div>';
+        groups.forEach(g => {
+          tocHtml += '<div class="tdd-toc-group">'
+            + '<div class="tdd-toc-group-title"><a href="#tdd-type-' + esc(g.typeName).replace(/[^a-zA-Z0-9]/g,'-') + '">' + esc(g.typeName) + '</a></div>'
+            + '<ol class="tdd-toc-list">';
+          g.items.forEach(it => {
+            const idx = it.tddIndex || it.num || '';
+            const ttl = esc(it.tddTitle || (getKeyPairs(it.typeCode, it.vals, it.ids).map(k=>k[1]).filter(Boolean).join(' / ')) || it.typeName);
+            tocHtml += '<li><a href="#tdd-obj-' + idx + '">' + ttl + '</a></li>';
+          });
+          tocHtml += '</ol></div>';
+        });
+        tocHtml += '</div>';
+      }
 
       // ── Build project info panel ──
       function projField(label, value) {
@@ -7554,7 +7749,8 @@
         + filterLabel
         + '</div>'
         + projPanelHtml
-        + '<table><tbody>' + groupsHtml + '</tbody></table>'
+        + tocHtml
+        + groupsHtml
         + '<div class="print-footer">'
         + '<span>\u00A9 2026 PeopleSoft Project Insights &bull; Generated by PSoft Project Insights</span>'
         + '<span class="print-dev-info">Developer: Sudheer Putti (linkedin.com/in/sudheer-putti)</span>'
@@ -7577,6 +7773,8 @@
         if (codeEl) codeEl.textContent = cb.code;
       });
 
+      const pdfName = (meta.projectName || 'PeopleSoft_Project') + '_TDD';
+      document.title = pdfName;
       window.print();
     }
 
