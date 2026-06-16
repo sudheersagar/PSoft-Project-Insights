@@ -12,7 +12,7 @@ The traditional method for reviewing project metadata is broken. Application Des
 * **100% Local & Secure:** Operates entirely in your local browser memory. No external API calls, no database connections, and no server dependencies. Your sensitive enterprise metadata never leaves your machine.
 * **On-The-Fly Code Decoding:** Automatically converts unreadable Base64-encoded PeopleCode and fragmented HTML/SQL into readable, syntax-highlighted blocks for immediate review.
 * **Streamlined Peer Reviews:** Built-in filters allow you to instantly isolate objects marked as `Changed`, `Absent`, or `Custom Changed`, transforming an hours-long hunt into a minutes-long inspection.
-* **Automated Documentation:** Generate ready-made migration logs with a single click. Export a highly structured 12-column CSV manifest or a print-optimized PDF summary for change tickets and sign-offs.
+* **Automated Documentation:** Generate ready-made migration logs with a single click. Export a highly structured 12-column CSV manifest or a print-optimized TDD summary for change tickets and sign-offs.
 * **Deep X-Ray Auditing:** Instantly surfaces critical project-level audit headers (e.g., *Last Updated By*, *Source Operator*) and explicitly maps out complex object deployment flags.
 
 ## 🛠️ How to Use (The 3-Step Flow)
@@ -28,7 +28,7 @@ Use this demo PeopleSoft Project XML file to test **PSoft_Project_Insights.html*
 👉 [![Download XML](https://img.shields.io/badge/Download-Demo_XML-blue)](https://github.com/sudheersagar/PSoft-Project-Insights/blob/main/Docs/Demo_proj_xml.XML?download=1)
 After downloading, drag and drop the XML file into **PSoft_Project_Insights.html** to visualize and analyze the project.
 This file contains a large synthetic set of PeopleSoft objects for parser validation.
-Included the Project Object CSV file and Project Print PDF file generated from Demo XML project in "Docs" folder for your reference.
+Included the Project Object CSV file and Project TDD PDF file generated from Demo XML project in "Docs" folder for your reference.
 
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues)
