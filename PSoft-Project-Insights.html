@@ -1085,6 +1085,172 @@
         color: #94a3b8;
       }
 
+      /* ── Project Info Panel ── */
+      #printArea .print-proj-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+        border: 1px solid #b0c4de;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 14pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-proj-info-title {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #0C2340 0%, #1A4E8C 100%) !important;
+        color: #fff !important;
+        font-size: 8pt;
+        font-weight: 700;
+        padding: 5pt 10pt;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-proj-field {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid #e2e8f0;
+        border-right: 1px solid #e2e8f0;
+      }
+
+      #printArea .print-proj-field:last-child,
+      #printArea .print-proj-field.full-width:last-child {
+        border-bottom: none;
+      }
+
+      #printArea .print-proj-field.full-width {
+        grid-column: 1 / -1;
+        flex-direction: column;
+        border-right: none;
+      }
+
+      #printArea .print-proj-label {
+        font-size: 6.5pt;
+        font-weight: 700;
+        color: #1A4E8C !important;
+        background: #eef3fb !important;
+        padding: 4pt 8pt;
+        white-space: nowrap;
+        min-width: 80pt;
+        border-right: 1px solid #c9d8ee;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-proj-value {
+        font-size: 7pt;
+        color: #1a1a2e !important;
+        padding: 4pt 8pt;
+        flex: 1;
+        word-break: break-word;
+      }
+
+      #printArea .print-proj-longdescr {
+        font-size: 6.5pt;
+        font-style: italic;
+        color: #2c3e60 !important;
+        padding: 5pt 10pt;
+        background: #f4f7fd !important;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── Object Type Group Headings ── */
+      #printArea .print-type-group-row td {
+        background: linear-gradient(90deg, #1A3A5C 0%, #1A4E8C 60%, #2E6AAF 100%) !important;
+        color: #ffffff !important;
+        font-size: 8.5pt;
+        font-weight: 800;
+        padding: 6pt 10pt !important;
+        border: none !important;
+        letter-spacing: 0.03em;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-type-count-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.22) !important;
+        color: #fff !important;
+        font-size: 6.5pt;
+        font-weight: 700;
+        padding: 1pt 7pt;
+        border-radius: 10px;
+        margin-left: 8pt;
+        vertical-align: middle;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-col-header-row td {
+        background: #e8eef8 !important;
+        color: #1A4E8C !important;
+        font-size: 6.5pt;
+        font-weight: 700;
+        padding: 3pt 5pt !important;
+        border: 1px solid #c9d8ee !important;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-key-cell {
+        font-size: 7pt;
+        color: #1a1a2e !important;
+      }
+
+      #printArea .print-key-lbl {
+        font-size: 6pt;
+        font-weight: 700;
+        color: #5a7aae !important;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 1pt;
+      }
+
+      #printArea .print-key-val {
+        font-weight: 700;
+        color: #0C2340 !important;
+      }
+
+      #printArea .print-status-badge {
+        font-size: 6pt;
+        font-weight: 700;
+        padding: 1pt 5pt;
+        border-radius: 3px;
+        white-space: nowrap;
+        display: inline-block;
+        border: 1px solid #b0c4de;
+        background: #e8eef8 !important;
+        color: #1A4E8C !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      #printArea .print-status-badge.absent {
+        background: #fee2e2 !important; color: #991b1b !important; border-color: #fca5a5;
+      }
+      #printArea .print-status-badge.changed {
+        background: #fef9c3 !important; color: #854d0e !important; border-color: #fde047;
+      }
+      #printArea .print-status-badge.custom {
+        background: #ede9fe !important; color: #5b21b6 !important; border-color: #c4b5fd;
+      }
+      #printArea .print-status-badge.same,
+      #printArea .print-status-badge.unchanged {
+        background: #dcfce7 !important; color: #166534 !important; border-color: #86efac;
+      }
+
       #printArea .print-dev-info {
         color: #ffffff;
         background: #ffffff;
@@ -4125,6 +4291,7 @@
     let activeType = '';         // Active type filter
     let selectedIdx = -1;        // Index of selected item
     let loadedXmlFileName = '';  // Name of loaded XML file
+    let currentMeta = null;      // Project metadata from last loaded XML
 
     // ========================================================================
     // SECTION E: ADDITIONAL UTILITY FUNCTIONS
@@ -4697,6 +4864,7 @@
         return;
       }
       allItems = data.items;
+      currentMeta = data.meta;
       renderMeta(data.meta);
       renderSummary();
       renderTypeFilter();
@@ -5819,9 +5987,23 @@
       // ─────────────────────────────────────────────────────────────────────
       const pjmMatch = clean.match(/<instance class="PJM">([\s\S]*?)<\/instance>/i);
       const pjmSrc = pjmMatch ? pjmMatch[1] : clean;
+      // Helper: prefer values from <rowset name="PjmDefn"> when present
+      function extractFromPjmDefn(tagName) {
+        const defnRs = pjmSrc.match(/<rowset[^>]*name=["']PjmDefn["'][^>]*>([\s\S]*?)<\/rowset>/i);
+        if (!defnRs) return '';
+        const defnContent = defnRs[1];
+        const rowM = defnContent.match(/<row>([\s\S]*?)<\/row>/i);
+        if (!rowM) return '';
+        return getTag(rowM[1], tagName) || '';
+      }
+
       const meta = {
         projectName: getTag(pjmSrc, 'szProjectName'),
-        projectDescr: getTag(pjmSrc, 'szProjectDescr'),
+        projectDescr: (function () {
+          // Prefer szProjectDescr from PjmDefn row when available
+          const d = extractFromPjmDefn('szProjectDescr');
+          return d && d.trim() ? d.trim() : getTag(pjmSrc, 'szProjectDescr');
+        })(),
         srcDb: getTag(pjmSrc, 'szSrcDBName'),
         tgtDb: getTag(pjmSrc, 'szTgtDBName'),
         srcOprId: getTag(pjmSrc, 'szSrcOprId'),
@@ -5829,7 +6011,32 @@
         lastUpdDt: getTag(pjmSrc, 'szLastUpdDttm'),
         runDt: getTag(pjmSrc, 'szRunDtTm'),
         compRelease: getTag(pjmSrc, 'szCompRelease'),
-        objectCount: getTag(pjmSrc, 'nProjectCount')
+        objectCount: getTag(pjmSrc, 'nProjectCount'),
+        longDescr: (function () {
+          // Prefer long description nested within <rowset name="PjmDefn"> when present.
+          const defnRs = pjmSrc.match(/<rowset[^>]*name=["']PjmDefn["'][^>]*>([\s\S]*?)<\/rowset>/i);
+          if (defnRs) {
+            const defnContent = defnRs[1];
+            const rowM = defnContent.match(/<row>([\s\S]*?)<\/row>/i);
+            if (rowM) {
+              const row = rowM[1];
+              // Look for hDescrLong envelope inside the row
+              const hEnv = getOuterTag(row, 'hDescrLong');
+              if (hEnv && /<rowset[^>]*name=["']char["'][^>]*>/i.test(hEnv)) {
+                const charRs = getOuterTag(hEnv, 'rowset');
+                if (charRs) {
+                  const innerRowM = charRs.match(/<row>([\s\S]*?)<\/row>/i);
+                  if (innerRowM) {
+                    const inner = getTag(innerRowM[1], 'hDescrLong') || getTag(innerRowM[1], 'lpszDescrLong') || '';
+                    if (inner && !/^(HANDLE|POINTER)$/i.test(inner.trim())) return inner.trim();
+                  }
+                }
+              }
+            }
+          }
+          // Fallback: existing generic extractor
+          return extractDescrLong(pjmSrc);
+        })()
       };
 
       // ─────────────────────────────────────────────────────────────────────
@@ -7019,9 +7226,9 @@
       if (!filteredItems.length) { showToast('No objects match the current filter — nothing to print', 'warning'); return; }
 
       const hasPum = document.body.classList.contains('pum-mode');
-      const projName = (document.getElementById('projectMeta').querySelector('.accent')?.textContent || 'PeopleSoft Project').trim();
+      const meta = currentMeta || {};
 
-      // Collect active filter labels
+      // ── Active filter label string ──
       const search = document.getElementById('searchBox').value.trim();
       const typeFlt = document.getElementById('typeFilter').value;
       const stFlt = document.getElementById('statusFilter').value;
@@ -7037,19 +7244,13 @@
         ? ' &nbsp;|&nbsp; Filtered by: ' + filterParts.join(', ')
         : ' &nbsp;|&nbsp; All objects (no filter)';
 
-      /**
-       * Decodes XML entities in a string.
-       */
+      // ── Decode helpers ──
       function xmlDec(s) {
         return String(s)
           .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
           .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
           .replace(/&amp;/g, '&');
       }
-
-      /**
-       * Decodes PeopleCode source (handles base64 encoding).
-       */
       function decodeSrc(src) {
         if (!src) return '';
         const isB64 = /^[A-Za-z0-9+\/=\r\n]+$/.test(src.trim()) && src.length > 100;
@@ -7057,251 +7258,294 @@
         return xmlDec(src);
       }
 
-      // Collect source code blocks for deferred insertion
+      // ── Status badge CSS class helper ──
+      function statusCls(label) {
+        const l = (label || '').toLowerCase();
+        if (l.includes('absent')) return 'absent';
+        if (l.includes('custom')) return 'custom';
+        if (l.includes('changed')) return 'changed';
+        if (l.includes('same') || l.includes('unchanged')) return 'unchanged';
+        return '';
+      }
+
+      // ── Map type code to labeled key pairs for an item ──
+      function getKeyPairs(typeCode, vals, ids) {
+        const v = vals.map(x => (x || '').trim());
+        const trim1 = v[1].split(/\s+/)[0]; // strips space-padding (AE fields etc.)
+        switch (typeCode) {
+          case 0:  return [['Record', v[0]]];
+          case 1:  return [['Record', v[0]], ['Index', v[1]]];
+          case 2:  return [['Field', v[0]]];
+          case 3:  return [['Format', v[0]]];
+          case 4:  return [['Field', v[0]], ['Value', v[1]], ['Effdt', v[2]]];
+          case 5:  return [['Page', v[0]]];
+          case 6:  return [['Menu', v[0]]];
+          case 7:  return [['Component', v[0]]];
+          case 8:  return [['Record', v[0]], ['Field', trim1], ['Event', v[2]]];
+          case 9:  return [['Menu', v[0]], ['Bar', v[1]], ['Item', v[2]], ['Event', v[3]]];
+          case 10: return [['Query', v[0]]];
+          case 11: return [['Tree Structure', v[0]]];
+          case 12: return [['Tree', v[0]], ['Effdt', v[1]]];
+          case 13: return [['Access Group', v[0]]];
+          case 19: return [['Role', v[0]]];
+          case 20: return [['Process Type', v[0]], ['Process Name', v[1]]];
+          case 25: return [['Msg Set', v[0]], ['Msg Num', v[1]]];
+          case 30: return [['SQL ID', v[0]]];
+          case 31: return [['File Layout', v[0]]];
+          case 32: return [['Component Interface', v[0]]];
+          case 33: return [['AE Program', v[0]]];
+          case 34: return [['AE Program', v[0]], ['Section', trim1]];
+          case 37: return [['Message', v[0]]];
+          case 39: return [['Message', v[0]], ['Event', v[2]]];
+          case 42: return [['Component Interface', v[0]], ['Method', v[1]]];
+          case 43: return [['AE Program', v[0]], ['Section', trim1], ['Step', v[2]], ['Event', v[3]]];
+          case 44: return [['Page', v[0]], ['Event', v[2]]];
+          case 45: return [['Page', v[0]], ['Field', v[1]], ['Event', v[2]]];
+          case 46: return [['Component', v[0]], ['Event', v[2]]];
+          case 47: return [['Component', v[0]], ['Record', v[1]], ['Event', v[2]]];
+          case 48: return [['Component', v[0]], ['Record', v[1]], ['Field', v[2]], ['Event', v[3]]];
+          case 49: return [['Image', v[0]]];
+          case 50: return [['Style Sheet', v[0]]];
+          case 51: return [['HTML', v[0]]];
+          case 53: return [['Permission List', v[0]]];
+          case 54: return [['Portal', v[0]]];
+          case 55: return [['Portal', v[0]], ['Label', v[1]], ['Object', v[2]]];
+          case 56: return [['URL', v[0]]];
+          case 57: return [['Package', v[0]]];
+          case 58: return [['Package', v[0]], ['Path', v[1]], ['Class', v[2]], ['Event', v[3]]];
+          case 66: return [['CI', v[0]], ['Property', v[1]]];
+          case 68: return [['File Reference', v[0]]];
+          case 79: return [['Service', v[0]]];
+          case 80: return [['Operation', v[0]], ['Version', v[1]]];
+          case 81: return [['Operation', v[0]], ['Handler', v[1]]];
+          case 82: return [['Operation', v[0]], ['Version', v[1]]];
+          case 83: return [['Routing', v[0]], ['Effdt', v[1]]];
+          case 84: return [['IB Queue', v[0]]];
+          case 90: return [['Schema', v[0]], ['Version', v[1]]];
+          case 91: case 123: return [['Connected Query', v[0]]];
+          case 116: return [['Search Definition', v[0]]];
+          case 117: return [['Search Category', v[0]]];
+          case 115: return [['Search Attribute', v[0]]];
+          default: {
+            const pairs = [];
+            [0, 1, 2, 3].forEach(n => {
+              if (!v[n]) return;
+              const lbl = ids[n] && OBJECT_ID[ids[n]] ? OBJECT_ID[ids[n]] : (n === 0 ? 'Name' : 'Key ' + (n + 1));
+              pairs.push([lbl, v[n]]);
+            });
+            return pairs.length ? pairs : [['Name', v[0]]];
+          }
+        }
+      }
+
+      // ── Group filteredItems by typeName (insertion order = first seen) ──
+      const groups = [];
+      const groupMap = new Map();
+      filteredItems.forEach(it => {
+        if (!groupMap.has(it.typeName)) {
+          const g = { typeName: it.typeName, typeCode: it.typeCode, items: [] };
+          groups.push(g);
+          groupMap.set(it.typeName, g);
+        }
+        groupMap.get(it.typeName).items.push(it);
+      });
+
+      // ── Deferred content blocks (source code / long descriptions) ──
       const codeBlocks = [];
 
-      /**
-       * Builds rich subtype + metadata text for print view.
-       */
-      function buildPrintMeta(it) {
-        const v = it.vals;
-        const parts = [];
+      // ── Build HTML rows per group ──
+      const COL_SPAN = hasPum ? 7 : 6;
+      let globalNum = 0;
 
-        // General metadata badges
-        const ownerId = getObjectOwnerID(it);
-        const updatedBy = getObjectLastUpdatedBy(it);
-        const updatedAt = getObjectLastUpdatedAt(it);
-        const visibility = it.typeCode === 10 ? ((it.queryOwner || '').trim() ? 'Private Query' : 'Public Query') : '';
-        const sourceType = getObjectSourceType(it);
-        if (ownerId) parts.push('Owner: ' + ownerId);
-        if (updatedBy) parts.push('Updated By: ' + updatedBy);
-        if (updatedAt) parts.push('Updated At: ' + updatedAt);
-        if (visibility) parts.push('Visibility: ' + visibility);
-        if (sourceType) parts.push('Source: ' + sourceType);
-        // Subtype badge text
-        if (it.typeCode === 0 && it.recType >= 0 && recTypeLabel(it.recType)) parts.push('Type: ' + recTypeLabel(it.recType));
-        if (it.typeCode === 2 && it.fldType >= 0) parts.push('Type: ' + fldTypeLabel(it.fldType));
-        if (it.typeCode === 5 && it.pnlType >= 0 && pnlTypeLabel(it.pnlType)) parts.push('Type: ' + pnlTypeLabel(it.pnlType));
-        if (it.typeCode === 10) parts.push((it.queryOwner || '').trim() ? 'Private Query (Owner: ' + it.queryOwner.trim() + ')' : 'Public Query');
+      const groupsHtml = groups.map(g => {
+        const { typeName, typeCode, items: gItems } = g;
+        const ts = typeStyle(typeName);
 
-        // Rich record info
-        if (it.typeCode === 0 && it.recInfo) {
-          if (it.recInfo.fieldCount) parts.push('Fields: ' + it.recInfo.fieldCount);
-          if (it.recInfo.descr) parts.push('Descr: ' + it.recInfo.descr);
-        }
-        // Rich field info
-        if (it.typeCode === 2 && it.fieldInfo) {
-          if (it.fieldInfo.length) parts.push('Length: ' + it.fieldInfo.length);
-          if (it.fieldInfo.longName) parts.push('Long Name: ' + it.fieldInfo.longName);
-        }
-        // Rich page info
-        if (it.typeCode === 5 && it.pageInfo) {
-          if (it.pageInfo.fieldCount) parts.push('Fields: ' + it.pageInfo.fieldCount);
-        }
-        // Rich component info
-        if (it.typeCode === 7 && it.compInfo) {
-          if (it.compInfo.actions?.length) parts.push('Actions: ' + it.compInfo.actions.join(', '));
-          if (it.compInfo.pnlCount) parts.push('Pages: ' + it.compInfo.pnlCount);
-          if (it.compInfo.market) parts.push('Market: ' + it.compInfo.market);
-          if (it.compInfo.srchRec) parts.push('Search Rec: ' + it.compInfo.srchRec);
-          if (it.compInfo.addSrchRec) parts.push('Add Search Rec: ' + it.compInfo.addSrchRec);
-        }
-        // PeopleCode event name
-        if ([8, 43, 44, 45, 46, 47, 48].includes(it.typeCode) && v[2]) {
-          parts.push('Event: ' + v[2]);
-        }
-        // StyleSheet info
-        if (it.typeCode === 50 && it.styleInfo) {
-          if (it.styleInfo.descr) parts.push('Descr: ' + it.styleInfo.descr);
-          if (it.styleInfo.numClass) parts.push('Classes: ' + it.styleInfo.numClass);
-          parts.push(it.styleInfo.styleTypeLbl);
-        }
-        // Image info
-        if (it.typeCode === 49 && it.imgInfo) {
-          if (it.imgInfo.contTypeLbl) parts.push(it.imgInfo.contTypeLbl);
-          if (it.imgInfo.contFmt) parts.push('Format: ' + it.imgInfo.contFmt.toUpperCase());
-          if (it.imgInfo.contLen) parts.push('Size: ' + Number(it.imgInfo.contLen).toLocaleString() + ' bytes');
-          if (it.imgInfo.descr) parts.push('Descr: ' + it.imgInfo.descr);
-        }
-        // Portal info
-        if ((it.typeCode === 54 || it.typeCode === 55) && it.portalInfo) {
-          if (it.portalInfo.labelName) parts.push('Label: ' + it.portalInfo.labelName);
-          if (it.portalInfo.refTypeLbl) parts.push('Ref Type: ' + it.portalInfo.refTypeLbl);
-          if (it.portalInfo.portalName) parts.push('Portal: ' + it.portalInfo.portalName);
-        }
-        // Process definition
-        if (it.typeCode === 20) {
-          if (it.psdInfo?.restartEnabled) parts.push('Restartable: ' + it.psdInfo.restartEnabled);
-          if (it.psdInfo?.processGroups) parts.push('Groups: ' + it.psdInfo.processGroups);
-          if (it.psdInfo?.runCtrlComponents) parts.push('Run Ctrl: ' + it.psdInfo.runCtrlComponents);
-        }
-        // App Engine Program
-        if (it.typeCode === 33 && it.aeProgInfo) {
-          if (it.aeProgInfo.descr) parts.push('Descr: ' + it.aeProgInfo.descr);
-          if (it.aeProgInfo.progTypeLbl) parts.push('Type: ' + it.aeProgInfo.progTypeLbl);
-        }
-        // App Engine Section
-        if (it.typeCode === 34 && it.aeSectInfo) {
-          if (it.aeSectInfo.descr) parts.push('Descr: ' + it.aeSectInfo.descr);
-          if (it.aeSectInfo.sectTypeLbl) parts.push('Type: ' + it.aeSectInfo.sectTypeLbl);
-          if (it.aeSectInfo.stepCount) parts.push('Steps: ' + it.aeSectInfo.stepCount);
-        }
-        // Application Package
-        if (it.typeCode === 57 && it.appPkgInfo) {
-          if (it.appPkgInfo.descr) parts.push('Descr: ' + it.appPkgInfo.descr);
-          if (it.appPkgInfo.packageRoot) parts.push('Root: ' + it.appPkgInfo.packageRoot);
-        }
-        // Service
-        if (it.typeCode === 79 && it.serviceInfo) {
-          if (it.serviceInfo.descr) parts.push('Descr: ' + it.serviceInfo.descr);
-          if (it.serviceInfo.aliasName) parts.push('Alias: ' + it.serviceInfo.aliasName);
-        }
-        // Service Operation
-        if (it.typeCode === 80 && it.opInfo) {
-          if (it.opInfo.descr) parts.push('Descr: ' + it.opInfo.descr);
-          if (it.opInfo.aliasName) parts.push('Alias: ' + it.opInfo.aliasName);
-        }
-        // Service Operation Version
-        if (it.typeCode === 82 && it.opVerInfo) {
-          if (it.opVerInfo.descr) parts.push('Descr: ' + it.opVerInfo.descr);
-          if (it.opVerInfo.activeFlag) parts.push('Status: ' + it.opVerInfo.activeFlag);
-        }
-        // Service Operation Routing
-        if (it.typeCode === 83 && it.routingInfo) {
-          if (it.routingInfo.descr) parts.push('Descr: ' + it.routingInfo.descr);
-          if (it.routingInfo.senderNode && it.routingInfo.receiverNode) {
-            parts.push('Routing: ' + it.routingInfo.senderNode + ' -> ' + it.routingInfo.receiverNode);
-          }
-          if (it.routingInfo.primaryUrl) parts.push('URL: ' + it.routingInfo.primaryUrl);
-        }
-        // Translate Value
-        if (it.typeCode === 4 && it.xtmInfo) {
-          if (it.xtmInfo.longName) parts.push('Label: ' + it.xtmInfo.longName);
-          if (it.xtmInfo.status) parts.push('Status: ' + it.xtmInfo.status);
-        }
-        // Permission List
-        if (it.typeCode === 53 && it.clmInfo) {
-          if (it.clmInfo.descr) parts.push('Descr: ' + it.clmInfo.descr);
-          if (it.clmInfo.itemCount) parts.push('Auth Items: ' + it.clmInfo.itemCount);
-        }
-        // URL Definition
-        if (it.typeCode === 56 && it.urlInfo) {
-          if (it.urlInfo.descr) parts.push('Descr: ' + it.urlInfo.descr);
-          if (it.urlInfo.url) parts.push('URL: ' + it.urlInfo.url);
-        }
-        // SQL Object
-        if (it.typeCode === 30 && it.sqlEntry) {
-          if (it.sqlEntry.sqlType) parts.push('SQL Type: ' + it.sqlEntry.sqlType);
-          if (it.sqlEntry.stmtCount) parts.push('Statements: ' + it.sqlEntry.stmtCount);
-        }
-        return parts;
-      }
+        // Dark gradient heading row spanning all columns
+        const groupHdr = '<tr class="print-type-group-row"><td colspan="' + COL_SPAN + '">'
+          + ts.icon + ' ' + esc(typeName)
+          + '<span class="print-type-count-badge">' + gItems.length + ' object' + (gItems.length !== 1 ? 's' : '') + '</span>'
+          + '</td></tr>';
 
-      /**
-       * Determines if an item has source code and what type.
-       * Returns an object with type info or null.
-       */
-      function getSourceCodeInfo(it) {
-        // Record View SQL query (type 0)
-        if (it.typeCode === 0 && it.recInfo && it.recInfo.viewSql) {
-          return { type: 'sql', label: 'Record View SQL: ' + (it.vals[0] || ''), code: xmlDec(it.recInfo.viewSql.trim()) };
-        }
-        // PeopleCode types (8, 42-48, 58, 66)
-        if ([8, 42, 43, 44, 45, 46, 47, 48, 58, 66].includes(it.typeCode) && it.pcEntry && it.pcEntry.src) {
+        // Lightweight column header row for this group
+        const colHdr = '<tr class="print-col-header-row">'
+          + '<td style="width:20pt">#</td>'
+          + '<td>Object Keys</td>'
+          + '<td style="width:52pt">Src Status</td>'
+          + '<td style="width:52pt">Tgt Status</td>'
+          + '<td style="width:40pt">Action</td>'
+          + '<td style="width:30pt">Take?</td>'
+          + '<td style="width:30pt">Done?</td>'
+          + (hasPum ? '<td style="width:36pt">Retrofit?</td>' : '')
+          + '</tr>';
+
+        const objRows = gItems.map(it => {
+          globalNum++;
+          const keyPairs = getKeyPairs(typeCode, it.vals, it.ids);
+
+          // Key cell: inline labeled blocks, omit empty values (deduplication of null keys)
+          const keyHtml = keyPairs.filter(([, val]) => val)
+            .map(([lbl, val]) =>
+              '<span class="print-key-cell" style="display:inline-block;margin-right:8pt;vertical-align:top">'
+              + '<span class="print-key-lbl">' + esc(lbl) + '</span>'
+              + '<span class="print-key-val">' + esc(val) + '</span>'
+              + '</span>'
+            ).join('');
+
+          const srcCls = statusCls(it.srcStatus);
+          const tgtCls = statusCls(it.tgtStatus);
+          const rowBg = (globalNum % 2 === 0) ? ' style="background:#f8fafc"' : '';
+
+          const mainRow = '<tr' + rowBg + '>'
+            + '<td style="color:#64748b;font-size:6.5pt">' + globalNum + '</td>'
+            + '<td>' + keyHtml + '</td>'
+            + '<td><span class="print-status-badge ' + srcCls + '">' + esc(it.srcStatus) + '</span></td>'
+            + '<td><span class="print-status-badge ' + tgtCls + '">' + esc(it.tgtStatus) + '</span></td>'
+            + '<td style="font-size:6.5pt">' + esc(it.action) + '</td>'
+            + '<td style="font-size:6.5pt;text-align:center">' + esc(it.take) + '</td>'
+            + '<td style="font-size:6.5pt;text-align:center">' + esc(it.done) + '</td>'
+            + (hasPum ? '<td style="font-size:6.5pt;text-align:center">' + (requiresRetrofit(it) ? 'Yes' : 'No') + '</td>' : '')
+            + '</tr>';
+
+          // ── Metadata badges sub-row ──
+          const metaParts = [];
+          const ownerId = getObjectOwnerID(it);
+          const updatedBy = getObjectLastUpdatedBy(it);
+          const updatedAt = getObjectLastUpdatedAt(it);
+          if (ownerId) metaParts.push('Owner: ' + ownerId);
+          if (updatedBy) metaParts.push('Updated By: ' + updatedBy);
+          if (updatedAt) metaParts.push('Updated At: ' + updatedAt);
           const v = it.vals;
-          const sec = v[1] ? v[1].trim().split(/\s+/)[0] : '';
-          const label = [v[0], sec, v[2], v[3]].filter(Boolean).join(' > ');
-          return { type: 'pc', label, code: decodeSrc(it.pcEntry.src) };
-        }
-        // SQL Object (type 30)
-        if (it.typeCode === 30 && it.sqlEntry && it.sqlEntry.txt) {
-          return { type: 'sql', label: it.vals[0] || '', code: xmlDec(it.sqlEntry.txt.trim()) };
-        }
-        // HTML Object (type 51)
-        if (it.typeCode === 51 && it.htmlEntry && it.htmlEntry.txt) {
-          return { type: 'html', label: it.vals[0] || '', code: xmlDec(it.htmlEntry.txt.trim()) };
-        }
-        // StyleSheet/CSS (type 50)
-        if (it.typeCode === 50 && it.styleInfo && it.styleInfo.cssText) {
-          return { type: 'css', label: it.vals[0] || '', code: xmlDec(it.styleInfo.cssText.trim()) };
-        }
-        return null;
-      }
+          if (typeCode === 0 && it.recType >= 0 && recTypeLabel(it.recType)) metaParts.push('Type: ' + recTypeLabel(it.recType));
+          if (typeCode === 2 && it.fldType >= 0) metaParts.push('Type: ' + fldTypeLabel(it.fldType));
+          if (typeCode === 5 && it.pnlType >= 0 && pnlTypeLabel(it.pnlType)) metaParts.push('Type: ' + pnlTypeLabel(it.pnlType));
+          if (typeCode === 10) metaParts.push((it.queryOwner || '').trim() ? 'Private (Owner: ' + it.queryOwner.trim() + ')' : 'Public Query');
+          if (typeCode === 0 && it.recInfo) {
+            if (it.recInfo.fieldCount) metaParts.push('Fields: ' + it.recInfo.fieldCount);
+            if (it.recInfo.descr) metaParts.push('Descr: ' + it.recInfo.descr);
+          }
+          if (typeCode === 2 && it.fieldInfo) {
+            if (it.fieldInfo.length) metaParts.push('Length: ' + it.fieldInfo.length);
+            if (it.fieldInfo.longName) metaParts.push('Long Name: ' + it.fieldInfo.longName);
+          }
+          if (typeCode === 5 && it.pageInfo && it.pageInfo.fieldCount) metaParts.push('Fields: ' + it.pageInfo.fieldCount);
+          if (typeCode === 7 && it.compInfo) {
+            if (it.compInfo.actions && it.compInfo.actions.length) metaParts.push('Actions: ' + it.compInfo.actions.join(', '));
+            if (it.compInfo.pnlCount) metaParts.push('Pages: ' + it.compInfo.pnlCount);
+            if (it.compInfo.market) metaParts.push('Market: ' + it.compInfo.market);
+          }
+          if ([8,43,44,45,46,47,48].includes(typeCode) && v[2]) metaParts.push('Event: ' + v[2]);
+          if (typeCode === 33 && it.aeProgInfo) {
+            if (it.aeProgInfo.descr) metaParts.push('Descr: ' + it.aeProgInfo.descr);
+            if (it.aeProgInfo.progTypeLbl) metaParts.push('Type: ' + it.aeProgInfo.progTypeLbl);
+          }
+          if (typeCode === 34 && it.aeSectInfo) {
+            if (it.aeSectInfo.descr) metaParts.push('Descr: ' + it.aeSectInfo.descr);
+            if (it.aeSectInfo.sectTypeLbl) metaParts.push('Type: ' + it.aeSectInfo.sectTypeLbl);
+            if (it.aeSectInfo.stepCount) metaParts.push('Steps: ' + it.aeSectInfo.stepCount);
+          }
+          if (typeCode === 57 && it.appPkgInfo && it.appPkgInfo.descr) metaParts.push('Descr: ' + it.appPkgInfo.descr);
+          if (typeCode === 30 && it.sqlEntry) {
+            if (it.sqlEntry.sqlType) metaParts.push('SQL Type: ' + it.sqlEntry.sqlType);
+            if (it.sqlEntry.stmtCount) metaParts.push('Statements: ' + it.sqlEntry.stmtCount);
+          }
+          if (typeCode === 50 && it.styleInfo && it.styleInfo.descr) metaParts.push('Descr: ' + it.styleInfo.descr);
+          if ((typeCode === 54 || typeCode === 55) && it.portalInfo) {
+            if (it.portalInfo.labelName) metaParts.push('Label: ' + it.portalInfo.labelName);
+            if (it.portalInfo.refTypeLbl) metaParts.push('Ref Type: ' + it.portalInfo.refTypeLbl);
+          }
 
-      // Build table rows with source code blocks
-      const rowsHtml = filteredItems.map((it, i) => {
-        const v = it.vals;
-        const k34 = [v[2], v[3]].filter(Boolean).join(' / ');
-        const bg = i % 2 !== 0 ? ' style="background:#f8fafc"' : '';
+          const dlTxt = (it.descrLong || '').trim();
+          let metaSubRow = '';
+          if (metaParts.length || dlTxt) {
+            const di = dlTxt ? codeBlocks.length : -1;
+            if (dlTxt) codeBlocks.push({ ci: di, type: 'descr', txt: xmlDec(dlTxt) });
+            const badges = metaParts.map(t => '<span class="subtype-print-badge">' + esc(t) + '</span>').join('');
+            metaSubRow = '<tr class="meta-row"><td colspan="' + COL_SPAN + '"><div class="meta-extra-wrap">'
+              + badges
+              + (dlTxt ? '<div class="descr-print-box" data-cb="' + di + '-descr"></div>' : '')
+              + '</div></td></tr>';
+          }
 
-        // Check for source code (all types)
-        const srcInfo = getSourceCodeInfo(it);
-        let extra = '';
+          // ── Source code sub-row ──
+          let srcSubRow = '';
+          let srcInfo = null;
+          if (typeCode === 0 && it.recInfo && it.recInfo.viewSql) {
+            srcInfo = { type: 'sql', label: 'Record View SQL: ' + (it.vals[0] || ''), code: xmlDec(it.recInfo.viewSql.trim()) };
+          } else if ([8,42,43,44,45,46,47,48,58,66].includes(typeCode) && it.pcEntry && it.pcEntry.src) {
+            const sec = v[1] ? v[1].trim().split(/\s+/)[0] : '';
+            const label = [v[0], sec, v[2], v[3]].filter(Boolean).join(' > ');
+            srcInfo = { type: 'pc', label, code: decodeSrc(it.pcEntry.src) };
+          } else if (typeCode === 30 && it.sqlEntry && it.sqlEntry.txt) {
+            srcInfo = { type: 'sql', label: it.vals[0] || '', code: xmlDec(it.sqlEntry.txt.trim()) };
+          } else if (typeCode === 51 && it.htmlEntry && it.htmlEntry.txt) {
+            srcInfo = { type: 'html', label: it.vals[0] || '', code: xmlDec(it.htmlEntry.txt.trim()) };
+          } else if (typeCode === 50 && it.styleInfo && it.styleInfo.cssText) {
+            srcInfo = { type: 'css', label: it.vals[0] || '', code: xmlDec(it.styleInfo.cssText.trim()) };
+          }
 
-        if (srcInfo) {
-          const ci = codeBlocks.length;
-          codeBlocks.push({ ci, type: srcInfo.type, label: srcInfo.label, code: srcInfo.code });
+          if (srcInfo) {
+            const ci = codeBlocks.length;
+            codeBlocks.push({ ci, type: srcInfo.type, label: srcInfo.label, code: srcInfo.code });
+            const hdrCls = { sql: 'sql-header', pc: 'pc-header', html: 'html-header', css: 'css-header' };
+            const codeCls = { sql: 'code-box', pc: 'pc-code-box', html: 'html-code-box', css: 'css-code-box' };
+            const icons = { sql: '\u{1F537}', pc: '\u{1F4DC}', html: '\u{1F310}', css: '\u{1F3A8}' };
+            const titles = { sql: 'SQL', pc: 'PeopleCode', html: 'HTML', css: 'CSS' };
+            srcSubRow = '<tr class="src-row"><td colspan="' + COL_SPAN + '">'
+              + '<div class="src-header ' + hdrCls[srcInfo.type] + '">'
+              + icons[srcInfo.type] + ' ' + titles[srcInfo.type] + ' &mdash; ' + esc(srcInfo.label) + '</div>'
+              + '<div class="' + codeCls[srcInfo.type] + '" data-cb="' + ci + '-code"></div>'
+              + '</td></tr>';
+          }
 
-          // Map source types to CSS classes and icons
-          const headerClasses = { sql: 'sql-header', pc: 'pc-header', html: 'html-header', css: 'css-header' };
-          const codeClasses = { sql: 'code-box', pc: 'pc-code-box', html: 'html-code-box', css: 'css-code-box' };
-          const icons = { sql: '\u{1F537}', pc: '\u{1F4DC}', html: '\u{1F310}', css: '\u{1F3A8}' };
-          const titles = { sql: 'SQL', pc: 'PeopleCode', html: 'HTML', css: 'CSS' };
+          return mainRow + metaSubRow + srcSubRow;
+        }).join('');
 
-          extra = '<tr class="src-row"><td colspan="' + (hasPum ? '11' : '10') + '">'
-            + '<div class="src-header ' + headerClasses[srcInfo.type] + '">'
-            + icons[srcInfo.type] + ' ' + titles[srcInfo.type] + ' &mdash; ' + esc(srcInfo.label) + '</div>'
-            + '<div class="' + codeClasses[srcInfo.type] + '" data-cb="' + ci + '-code"></div>'
-            + '</td></tr>';
-        }
-
-        // Build metadata badges row
-        const stxt = buildPrintMeta(it);
-        const dlTxt = (it.descrLong || '').trim();
-        let metaExtra = '';
-
-        if (stxt.length || dlTxt) {
-          const di = dlTxt ? codeBlocks.length : -1;
-          if (dlTxt) codeBlocks.push({ ci: di, type: 'descr', txt: xmlDec(dlTxt) });
-          const badges = stxt.map(t => '<span class="subtype-print-badge">' + esc(t) + '</span>').join('');
-          metaExtra = '<tr class="meta-row"><td colspan="' + (hasPum ? '11' : '10') + '"><div class="meta-extra-wrap">'
-            + badges
-            + (dlTxt ? '<div class="descr-print-box" data-cb="' + di + '-descr"></div>' : '')
-            + '</div></td></tr>';
-        }
-
-        return '<tr' + bg + '>'
-          + '<td>' + it.num + '</td>'
-          + '<td>' + esc(it.typeName) + '</td>'
-          + '<td style="font-weight:700">' + esc(v[0] || '') + '</td>'
-          + '<td>' + esc(v[1] || '') + '</td>'
-          + '<td>' + esc(k34) + '</td>'
-          + '<td>' + esc(it.srcStatus) + '</td>'
-          + '<td>' + esc(it.tgtStatus) + '</td>'
-          + '<td>' + esc(it.action) + '</td>'
-          + '<td>' + esc(it.take) + '</td>'
-          + '<td>' + esc(it.done) + '</td>'
-          + (hasPum ? '<td>' + (requiresRetrofit(it) ? 'Yes' : 'No') + '</td>' : '')
-          + '</tr>' + metaExtra + extra;
+        return groupHdr + colHdr + objRows;
       }).join('');
 
-      // Build the print area with enhanced header including logo
+      // ── Build project info panel ──
+      function projField(label, value) {
+        if (!value) return '';
+        return '<div class="print-proj-field">'
+          + '<div class="print-proj-label">' + esc(label) + '</div>'
+          + '<div class="print-proj-value">' + esc(value) + '</div>'
+          + '</div>';
+      }
+
+      const projPanelHtml = '<div class="print-proj-info">'
+        + '<div class="print-proj-info-title">&#128196; Project Definition</div>'
+        + projField('Project Name', meta.projectName)
+        + projField('Description', meta.projectDescr)
+        + projField('Developed By', meta.srcOprId)
+        + projField('Last Updated', meta.lastUpdDt)
+        + projField('Source DB', meta.srcDb)
+        + projField('Target DB', meta.tgtDb)
+        + projField('Last Updated By', meta.lastUpdBy)
+        + projField('Release', meta.compRelease)
+        + (meta.longDescr
+          ? '<div class="print-proj-field full-width">'
+            + '<div class="print-proj-label">Long Description</div>'
+            + '<div class="print-proj-longdescr" id="projLongDescrSlot"></div>'
+            + '</div>'
+          : '')
+        + '</div>';
+
+      // ── Assemble print area HTML ──
       const pa = document.getElementById('printArea');
       pa.innerHTML =
         '<div class="print-header">'
-        // Inline SVG logo for the print view
         + '<svg class="print-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">'
-        + '<defs>'
-        + '<linearGradient id="printLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">'
+        + '<defs><linearGradient id="printLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">'
         + '<stop offset="0%" stop-color="#1A4E8C"/><stop offset="100%" stop-color="#3A7CC1"/>'
-        + '</linearGradient>'
-        + '</defs>'
+        + '</linearGradient></defs>'
         + '<path d="M16 2L28 8.5V21.5L16 28L4 21.5V8.5L16 2Z" fill="url(#printLogoGrad)" opacity="0.9"/>'
         + '<path d="M11 8H18C20.7614 8 23 10.2386 23 13C23 15.7614 20.7614 18 18 18H14V24H11V8ZM14 11V15H18C19.1046 15 20 14.1046 20 13C20 11.8954 18.1046 11 17 11H14Z" fill="#FF6B00"/>'
         + '</svg>'
         + '<div class="print-header-text">'
-        + '<h1>PeopleSoft Project Insights &mdash; ' + esc(projName) + '</h1>'
+        + '<h1>PeopleSoft Project Insights &mdash; ' + esc(meta.projectName || 'PeopleSoft Project') + '</h1>'
         + '<p>Technical Developer Reference &bull; App Designer XML Parser</p>'
+        + (meta.projectDescr ? ('<p style="margin-top:6px; font-size:9pt; color:#3a3f55; margin-bottom:0;">' + esc(meta.projectDescr) + '</p>') : '')
         + '</div>'
         + '</div>'
         + '<div class="print-meta">'
@@ -7309,25 +7553,27 @@
         + ' &nbsp;|&nbsp; ' + filteredItems.length + ' of ' + allItems.length + ' objects'
         + filterLabel
         + '</div>'
-        + '<table><thead><tr>'
-        + '<th>#</th><th>Object Type</th><th>Name / Key 1</th><th>Key 2</th>'
-        + '<th>Key 3/4</th><th>Src Status</th><th>Tgt Status</th>'
-        + '<th>Action</th><th>Take?</th><th>Done?</th>'
-        + (hasPum ? '<th>Retrofit?</th>' : '')
-        + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>'
+        + projPanelHtml
+        + '<table><tbody>' + groupsHtml + '</tbody></table>'
         + '<div class="print-footer">'
         + '<span>\u00A9 2026 PeopleSoft Project Insights &bull; Generated by PSoft Project Insights</span>'
         + '<span class="print-dev-info">Developer: Sudheer Putti (linkedin.com/in/sudheer-putti)</span>'
         + '</div>';
 
-      // Populate source code blocks (deferred to avoid HTML escaping issues)
+      // ── Populate long description slot (textContent avoids injection) ──
+      if (meta.longDescr) {
+        const ldEl = pa.querySelector('#projLongDescrSlot');
+        if (ldEl) ldEl.textContent = meta.longDescr;
+      }
+
+      // ── Populate deferred code / description blocks ──
       codeBlocks.forEach(function (cb) {
         if (cb.type === 'descr') {
-          var dEl = pa.querySelector('[data-cb="' + cb.ci + '-descr"]');
+          const dEl = pa.querySelector('[data-cb="' + cb.ci + '-descr"]');
           if (dEl) dEl.textContent = cb.txt;
           return;
         }
-        var codeEl = pa.querySelector('[data-cb="' + cb.ci + '-code"]');
+        const codeEl = pa.querySelector('[data-cb="' + cb.ci + '-code"]');
         if (codeEl) codeEl.textContent = cb.code;
       });
 
